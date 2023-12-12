@@ -6,6 +6,7 @@ async function connectToDatabase() {
 
   try {
     // await mongoose.connect(connectionString, {
+      
     await mongoose.connect("mongodb://localhost:27017/school", {
       // Local connection - testing purposes
       useNewUrlParser: true,
