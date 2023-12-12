@@ -1,11 +1,9 @@
+require("dotenv").config();
 const mongoose = require("mongoose");
 
 async function connectToDatabase() {
-  const connectionString =
-    "mongodb+srv://techceee:BWB8zIPsDxHi6v6Q@crm.oe1aqip.mongodb.net/?retryWrites=true&w=majority";
-
   try {
-    await mongoose.connect(connectionString, {
+    await mongoose.connect(process.env.MONGO_URI, {
     // await mongoose.connect("mongodb://localhost:27017/school", {
       // Local connection - testing purposes
       useNewUrlParser: true,
