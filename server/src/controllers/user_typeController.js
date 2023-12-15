@@ -12,5 +12,3 @@ async function getUser_types(req, res) {
 module.exports = {
   getUser_types,
 };
-
-//     // Create a JWT
