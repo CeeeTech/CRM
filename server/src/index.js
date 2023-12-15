@@ -1,10 +1,16 @@
 const http = require("http");
 const express = require("express");
+const bodyParser = require('body-parser');
 const connectToDatabase = require("../database");
 const studentRoutes = require("./routes/studentRoutes"); // Update the path
+const user_typeRoutes = require("./routes/user_typeRoutes");
 
 const app = express();
 const port = 8080;
+
+// Parse JSON and URL-encoded bodies
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 connectToDatabase();
 
@@ -17,6 +23,7 @@ app.get("/", (req, res) => {
 
 // Use the student routes
 app.use("/api", studentRoutes);
+app.use("/api", user_typeRoutes);
 
 // Create an HTTP server and listen on the specified port
 const server = http.createServer(app);
