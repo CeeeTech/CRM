@@ -6,10 +6,10 @@ const studentRoutes = require("./routes/studentRoutes");
 const user_typeRoutes = require("./routes/user_typeRoutes");
 const userRoutes = require("./routes/userRoutes");
 
-const app = express();
 const port = 8080;
+const app = express();
 
-// Parse JSON and URL-encoded bodies
+// Use body-parser middleware
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 

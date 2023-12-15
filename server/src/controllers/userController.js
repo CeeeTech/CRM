@@ -4,7 +4,7 @@ const User_type = require("../models/user_type");
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-async function getUsers(res) {
+async function getUsers(req, res) {
   try {
     const users = await User.find();
     res.status(200).json(users);
