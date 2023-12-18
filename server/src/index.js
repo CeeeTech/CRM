@@ -13,6 +13,9 @@ const port = 8080;
 
 connectToDatabase();
 
+//middleware
+app.use(express.json())
+
 // Set up your routes here
 app.get("/", (req, res) => {
   res.statusCode = 200;
