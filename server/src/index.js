@@ -7,6 +7,7 @@ const leadRoutes = require('./routes/leadRoutes')
 const branchRoutes = require('./routes/branchRoutes')
 const courseRoutes = require('./routes/courseRoutes')
 const statusRoutes = require('./routes/statusRoutes')
+const folowUpRoutes = require('./routes/folowUpRoutes')
 
 const app = express();
 const port = 8080;
@@ -30,6 +31,7 @@ app.use("/api", leadRoutes);
 app.use('/api', branchRoutes);
 app.use('/api', courseRoutes)
 app.use('/api', statusRoutes)
+app.use('/api', folowUpRoutes)
 
 // Create an HTTP server and listen on the specified port
 const server = http.createServer(app);
