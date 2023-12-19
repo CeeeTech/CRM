@@ -36,7 +36,7 @@ async function getLead(req, res) {
 
 //add new lead
 async function addLead(req, res) {
-    const { date, sheduled_at, sheduled_to, course_name, branch_name, status, student_name } = req.body
+    const { date, sheduled_to, course_name, branch_name, student_name } = req.body
 
     //check if course_name exist in course table
     const course_doucument = await Course.findOne({ name: course_name })
@@ -50,11 +50,8 @@ async function addLead(req, res) {
         res.status(400).json({ error: `branch not found: ${branch_name}` })
     }
 
-    //check if status exist in status table
-    const status_document = await Status.findOne({ name: status })
-    if (!status_document) {
-        res.status(400).json({ error: `status not found: ${status}` })
-    }
+    //current datetime
+    const currentDateTime = new Date();
 
     //check if student exist in student table
     const student_document = await Student.findOne({ name: student_name })
@@ -63,7 +60,7 @@ async function addLead(req, res) {
     }
 
     try {
-        const newLead = await Lead.create({ date, sheduled_at, sheduled_to, course_id: course_doucument._id, branch_id: branch_doucument._id, status_id: status_document._id, student_id: student_document._id })
+        const newLead = await Lead.create({ date, currentDateTime, sheduled_to, course_id: course_doucument._id, branch_id: branch_doucument._id, student_id: student_document._id })
         res.status(200).json(newLead)
     } catch (error) {
         console.log('Error adding leads:', error)
