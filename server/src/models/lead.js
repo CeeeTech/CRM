@@ -6,7 +6,6 @@ const leadSchema = new mongoose.Schema({
     sheduled_to: Date,
     course_id: {type: mongoose.Schema.Types.ObjectId, ref: 'Course'},
     branch_id: {type: mongoose.Schema.Types.ObjectId, ref: 'Branch'},
-    status_id: {type: mongoose.Schema.Types.ObjectId, ref: 'Status'},
     student_id: {type: mongoose.Schema.Types.ObjectId, ref: 'Student'}
 })
 
