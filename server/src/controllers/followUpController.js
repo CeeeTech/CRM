@@ -18,6 +18,11 @@ async function getFollowUp(req, res) {
 async function addFollowUp(req, res) {
     const { lead_id, user, status, comment } = req.body
 
+    //check if lead exist ini lead table
+    if (!mongoose.Types.ObjectId.isValid(lead_id)) {
+        res.status(400).json({ error: "no such lead" })
+    }
+
     //check if status exists in status table
     const status_document = await Status.findOne({ name: status })
     if (!status_document) {
