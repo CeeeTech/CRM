@@ -56,13 +56,13 @@ const Page = () => {
     []
   );
 
-  const handleSkip = useCallback(
-    () => {
-      auth.skip();
-      router.push('/');
-    },
-    [auth, router]
-  );
+  // const handleSkip = useCallback(
+  //   () => {
+  //     auth.skip();
+  //     router.push('/');
+  //   },
+  //   [auth, router]
+  // );
 
   return (
     <>
@@ -180,7 +180,7 @@ const Page = () => {
                   fullWidth
                   size="large"
                   sx={{ mt: 3 }}
-                  onClick={handleSkip}
+                  // onClick={handleSkip}
                 >
                   Skip authentication
                 </Button>
