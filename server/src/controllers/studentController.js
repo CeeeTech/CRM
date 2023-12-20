@@ -10,6 +10,17 @@ async function getStudents(req, res) {
   }
 }
 
+async function addStudent(req, res) {
+  const { name, age, contact_no, email, address } = req.body;
+  try {
+    const student = await Student.create({ name, age, contact_no, email, address })
+    res.status(200).json(student)
+  } catch (error) {
+    res.status(400).json({ error: error.message })
+  }
+}
+
 module.exports = {
   getStudents,
+  addStudent
 };
