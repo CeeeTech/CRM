@@ -1,4 +1,5 @@
 {
+  "proxy": "http://localhost:8080",
   "name": "material-kit-react",
   "version": "3.0.0",
   "author": "Devias",
