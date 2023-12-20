@@ -36,7 +36,7 @@ async function getLead(req, res) {
 
 //add new lead
 async function addLead(req, res) {
-    const { date, sheduled_to, course_name, branch_name, student_name } = req.body
+    const { date, sheduled_to, course_name, branch_name, student_id } = req.body
 
     //check if course_name exist in course table
     const course_doucument = await Course.findOne({ name: course_name })
@@ -54,13 +54,12 @@ async function addLead(req, res) {
     const currentDateTime = new Date();
 
     //check if student exist in student table
-    const student_document = await Student.findOne({ name: student_name })
-    if (!student_document) {
-        res.status(400).json({ error: `student not found: ${student_name}` })
+    if (!mongoose.Types.ObjectId.isValid(student_id)) {
+        res.status(400).json({ error: "no such student" })
     }
 
     try {
-        const newLead = await Lead.create({ date, currentDateTime, sheduled_to, course_id: course_doucument._id, branch_id: branch_doucument._id, student_id: student_document._id })
+        const newLead = await Lead.create({ date, sheduled_at:currentDateTime, sheduled_to, course_id: course_doucument._id, branch_id: branch_doucument._id, student_id: student_id })
         res.status(200).json(newLead)
     } catch (error) {
         console.log('Error adding leads:', error)
