@@ -10,6 +10,19 @@ async function getBranches(req, res) {
     }
 }
 
+const addBranch = async (req, res) => {
+    const { name } = req.body
+
+    //add doc to db
+    try {
+        const branch = await Branch.create({ name })
+        res.status(200).json(branch)
+    } catch (error) {
+        res.status(400).json({ error: error.message })
+    }
+}
+
 module.exports = {
     getBranches,
+    addBranch
 }
