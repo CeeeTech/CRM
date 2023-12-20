@@ -1,16 +1,16 @@
-import { createContext, useContext, useEffect, useReducer, useRef } from 'react';
-import PropTypes from 'prop-types';
+import { createContext, useContext, useEffect, useReducer, useRef } from "react";
+import PropTypes from "prop-types";
 
 const HANDLERS = {
-  INITIALIZE: 'INITIALIZE',
-  SIGN_IN: 'SIGN_IN',
-  SIGN_OUT: 'SIGN_OUT'
+  INITIALIZE: "INITIALIZE",
+  SIGN_IN: "SIGN_IN",
+  SIGN_OUT: "SIGN_OUT",
 };
 
 const initialState = {
   isAuthenticated: false,
   isLoading: true,
-  user: null
+  user: null,
 };
 
 const handlers = {
@@ -19,18 +19,16 @@ const handlers = {
 
     return {
       ...state,
-      ...(
-        // if payload (user) is provided, then is authenticated
-        user
-          ? ({
+      ...// if payload (user) is provided, then is authenticated
+      (user
+        ? {
             isAuthenticated: true,
             isLoading: false,
-            user
-          })
-          : ({
-            isLoading: false
-          })
-      )
+            user,
+          }
+        : {
+            isLoading: false,
+          }),
     };
   },
   [HANDLERS.SIGN_IN]: (state, action) => {
@@ -39,21 +37,20 @@ const handlers = {
     return {
       ...state,
       isAuthenticated: true,
-      user
+      user,
     };
   },
   [HANDLERS.SIGN_OUT]: (state) => {
     return {
       ...state,
       isAuthenticated: false,
-      user: null
+      user: null,
     };
-  }
+  },
 };
 
-const reducer = (state, action) => (
-  handlers[action.type] ? handlers[action.type](state, action) : state
-);
+const reducer = (state, action) =>
+  handlers[action.type] ? handlers[action.type](state, action) : state;
 
 // The role of this context is to propagate authentication state through the App tree.
 
@@ -75,103 +72,81 @@ export const AuthProvider = (props) => {
     let isAuthenticated = false;
 
     try {
-      isAuthenticated = window.sessionStorage.getItem('authenticated') === 'true';
+      isAuthenticated = window.sessionStorage.getItem("authenticated") === "true";
     } catch (err) {
       console.error(err);
     }
 
-    if (isAuthenticated) {
-      const user = {
-        id: '5e86809283e28b96d2d38537',
-        avatar: '/assets/avatars/avatar-anika-visser.png',
-        name: 'Anika Visser',
-        email: 'anika.visser@devias.io'
-      };
-
-      dispatch({
-        type: HANDLERS.INITIALIZE,
-        payload: user
-      });
-    } else {
-      dispatch({
-        type: HANDLERS.INITIALIZE
-      });
-    }
+    dispatch({
+      type: HANDLERS.INITIALIZE,
+    });
   };
 
-  useEffect(
-    () => {
-      initialize();
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
-  );
+  useEffect(() => {
+    initialize();
+  }, []);
 
   const skip = () => {
     try {
-      window.sessionStorage.setItem('authenticated', 'true');
+      window.sessionStorage.setItem("authenticated", "true");
     } catch (err) {
       console.error(err);
     }
 
     const user = {
-      id: '5e86809283e28b96d2d38537',
-      avatar: '/assets/avatars/avatar-anika-visser.png',
-      name: 'Anika Visser',
-      email: 'anika.visser@devias.io'
+      id: "5e86809283e28b96d2d38537",
+      avatar: "/assets/avatars/avatar-anika-visser.png",
+      name: "Anika Visser",
+      email: "anika.visser@devias.io",
     };
 
     dispatch({
       type: HANDLERS.SIGN_IN,
-      payload: user
+      payload: user,
     });
   };
 
   const signIn = async (email, password) => {
     try {
-      const response = await fetch('http://localhost:8080/api/login', {
-        method: 'POST',
+      const response = await fetch("http://localhost:8080/api/login", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ email, password }),
       });
-  
+
       if (!response.ok) {
-        throw new Error('Invalid email or password');
+        throw new Error("Invalid email or password");
       }
-  
+
       const data = await response.json();
-  
+
       // Save authentication status and token in session storage
       try {
-        window.sessionStorage.setItem('authenticated', 'true');
-        window.sessionStorage.setItem('token', data.token);
-  
-        // Store token in local storage as well
-        localStorage.setItem('token', data.token);
+        window.sessionStorage.setItem("authenticated", "true");
+        window.sessionStorage.setItem("token", data.token);
       } catch (err) {
         console.error(err);
       }
-  
+
       // Dispatch action to update the context state with the authentication status
       dispatch({
         type: HANDLERS.SIGN_IN,
       });
     } catch (error) {
-      console.error('Error during login:', error);
+      console.error("Error during login:", error);
       throw error;
     }
   };
-  
-  
+
   const signUp = async (email, name, password) => {
-    throw new Error('Sign up is not implemented');
+    throw new Error("Sign up is not implemented");
   };
 
   const signOut = () => {
     dispatch({
-      type: HANDLERS.SIGN_OUT
+      type: HANDLERS.SIGN_OUT,
     });
   };
 
@@ -182,7 +157,7 @@ export const AuthProvider = (props) => {
         skip,
         signIn,
         signUp,
-        signOut
+        signOut,
       }}
     >
       {children}
@@ -191,7 +166,7 @@ export const AuthProvider = (props) => {
 };
 
 AuthProvider.propTypes = {
-  children: PropTypes.node
+  children: PropTypes.node,
 };
 
 export const AuthConsumer = AuthContext.Consumer;
