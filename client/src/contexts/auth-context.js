@@ -128,29 +128,43 @@ export const AuthProvider = (props) => {
   };
 
   const signIn = async (email, password) => {
-    if (email !== 'demo@devias.io' || password !== 'Password123!') {
-      throw new Error('Please check your email and password');
-    }
-
     try {
-      window.sessionStorage.setItem('authenticated', 'true');
-    } catch (err) {
-      console.error(err);
+      const response = await fetch('http://localhost:8080/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Invalid email or password');
+      }
+  
+      const data = await response.json();
+  
+      // Save authentication status and token in session storage
+      try {
+        window.sessionStorage.setItem('authenticated', 'true');
+        window.sessionStorage.setItem('token', data.token);
+  
+        // Store token in local storage as well
+        localStorage.setItem('token', data.token);
+      } catch (err) {
+        console.error(err);
+      }
+  
+      // Dispatch action to update the context state with the authentication status
+      dispatch({
+        type: HANDLERS.SIGN_IN,
+      });
+    } catch (error) {
+      console.error('Error during login:', error);
+      throw error;
     }
-
-    const user = {
-      id: '5e86809283e28b96d2d38537',
-      avatar: '/assets/avatars/avatar-anika-visser.png',
-      name: 'Anika Visser',
-      email: 'anika.visser@devias.io'
-    };
-
-    dispatch({
-      type: HANDLERS.SIGN_IN,
-      payload: user
-    });
   };
-
+  
+  
   const signUp = async (email, name, password) => {
     throw new Error('Sign up is not implemented');
   };

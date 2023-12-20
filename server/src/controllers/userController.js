@@ -70,6 +70,69 @@ async function login(req, res) {
   }
 }
 
+async function getUserById(req, res) {
+  try {
+
+    const { id } = req.params;
+
+    // check if the id is valid object id
+    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({ error: "Invalid id" });
+    }
+
+    const user = await User.findById(id);
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.status(200).json(user);
+  } catch (error) {
+    console.error("Error fetching user:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+}
+
+// update user by id
+async function updateUserById(req, res) {
+  try {
+    const { id } = req.params;
+    const { name, password, email, user_type } = req.body;
+
+    // check if the id is valid object id
+    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({ error: "Invalid id" });
+    }
+
+    // Check if user_type exists in the user_type collection
+    const user_type_document = await User_type.findOne({ name: user_type });
+
+    if (!user_type_document) {
+      return res.status(400).json({ error: `user_type not found: ${user_type}` });
+    }
+
+    // Hash the password before updating
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Update the user by ID
+    const updatedUser = await User.findByIdAndUpdate(
+      id,
+      { name, password: hashedPassword, email, user_type: user_type_document._id },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.status(200).json({ user: updatedUser, message: "User updated!" });
+  } catch (error) {
+    console.error("Error updating user:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+}
+
+
 module.exports = {
-  getUsers, createUser, login
+  getUsers, createUser, login, getUserById, updateUserById
 };

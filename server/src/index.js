@@ -1,13 +1,16 @@
 const http = require("http");
 const express = require("express");
 const bodyParser = require('body-parser');
+const cors = require('cors');
 const connectToDatabase = require("../database");
 const studentRoutes = require("./routes/studentRoutes"); 
 const user_typeRoutes = require("./routes/user_typeRoutes");
 const userRoutes = require("./routes/userRoutes");
 
-const port = 8080;
 const app = express();
+app.use(cors());
+
+const port = 8080;
 
 // Use body-parser middleware
 app.use(bodyParser.json());

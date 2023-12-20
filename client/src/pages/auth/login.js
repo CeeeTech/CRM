@@ -25,31 +25,28 @@ const Page = () => {
   const [method, setMethod] = useState('email');
   const formik = useFormik({
     initialValues: {
-      email: 'demo@devias.io',
-      password: 'Password123!',
-      submit: null
+      email: '',
+      password: '',
     },
     validationSchema: Yup.object({
-      email: Yup
-        .string()
+      email: Yup.string()
         .email('Must be a valid email')
         .max(255)
         .required('Email is required'),
-      password: Yup
-        .string()
+      password: Yup.string()
         .max(255)
-        .required('Password is required')
+        .required('Password is required'),
     }),
     onSubmit: async (values, helpers) => {
       try {
         await auth.signIn(values.email, values.password);
-        router.push('/');
+        router.push('/'); 
       } catch (err) {
         helpers.setStatus({ success: false });
         helpers.setErrors({ submit: err.message });
         helpers.setSubmitting(false);
       }
-    }
+    },
   });
 
   const handleMethodChange = useCallback(
