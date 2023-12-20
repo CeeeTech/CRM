@@ -8,14 +8,14 @@ const branchRoutes = require('./routes/branchRoutes')
 const courseRoutes = require('./routes/courseRoutes')
 const statusRoutes = require('./routes/statusRoutes')
 const folowUpRoutes = require('./routes/folowUpRoutes')
+const cors = require('cors');
 
 const app = express();
 const port = 8080;
 
 connectToDatabase();
 
-//middleware
-app.use(express.json())
+
 
 // Set up your routes here
 app.get("/", (req, res) => {
@@ -23,6 +23,12 @@ app.get("/", (req, res) => {
   res.setHeader("Content-Type", "text/plain");
   res.end("Hello, world!");
 });
+
+// Enable CORS middleware
+app.use(cors({ origin: 'http://localhost:3000' }));
+
+// Other middleware
+app.use(express.json());
 
 // Use the student routes
 app.use("/api", studentRoutes);
