@@ -70,7 +70,7 @@ export const AccountProfileDetails = () => {
 
   const [values, setValues] = useState({
     name: '',
-    age: '',
+    dob: '2023-12-22',
     email: '',
     phone: '',
     address: '',
@@ -108,7 +108,7 @@ export const AccountProfileDetails = () => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             name: values.name,
-            age: values.age,
+            dob: values.dob,
             contact_no: values.phone,
             email: values.email,
             address: values.address
@@ -160,6 +160,19 @@ export const AccountProfileDetails = () => {
           return
         }
         console.log('Data inserted successfully!');
+        setValues({
+          name: '',
+          dob: formattedDate,
+          email: '',
+          phone: '',
+          address: '',
+          date: formattedDate,
+          scheduled_to: formattedDate,
+          course: 'Computer Science',
+          branch: 'Colombo',
+          status: 'Registered',
+          comment: ''
+        })
       } catch (error) {
         console.error('Error during data insertion:', error.message);
       }
@@ -176,8 +189,8 @@ export const AccountProfileDetails = () => {
     >
       <Card>
         <CardHeader
-          subheader="The  can be edited"
-          title="Profile"
+          // subheader="The  can be edited"
+          title=" Add New Lead"
         />
         <CardContent sx={{ pt: 0 }}>
           <Box sx={{ m: -1.5 }}>
@@ -205,12 +218,12 @@ export const AccountProfileDetails = () => {
               >
                 <TextField
                   fullWidth
-                  label="Age"
-                  name="age"
+                  label="Date of Birth"
+                  name="dob"
                   onChange={handleChange}
                   required
-                  type='number'
-                  value={values.age}
+                  type='date'
+                  value={values.dob}
                 />
               </Grid>
               <Grid
