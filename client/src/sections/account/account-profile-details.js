@@ -11,20 +11,79 @@ import {
   Unstable_Grid2 as Grid
 } from '@mui/material';
 
-export const AccountProfileDetails = () => {
+export const AccountProfileDetails = ({ selectedLeadId, lead }) => {
+
+  // console.log("Selected Lead  in AccountProfileDetails:", lead);
 
   const [branches, setBranches] = useState(null);
   const [statuses, setStatuses] = useState(null);
   const [courses, setCourses] = useState(null);
+  const [update, setUpdate] = useState(false);
+
+  const date = new Date();
+  const formattedDate = date.toISOString().split('T')[0];
+
+  function formatDate(inputDate) {
+    const date = new Date(inputDate);
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const year = date.getFullYear();
+    const formattedDate = `${year}-${month}-${day}`;
+    return formattedDate;
+  }
+
+  const [values, setValues] = useState({
+    name: '',
+    dob: formattedDate,
+    email: '',
+    phone: '',
+    address: '',
+    date: formattedDate,
+    scheduled_to: formattedDate,
+    course: 'Computer Science',
+    branch: 'Colombo',
+    status: 'Registered',
+    comment: ''
+  });
+
 
   useEffect(() => {
+    const fetchLeadData = async () => {
+      try {
+        const leadResponse = await fetch(`http://localhost:8080/api/leads/${selectedLeadId}`);
+        const leadJson = await leadResponse.json();
+
+        if (leadResponse.ok) {
+          setUpdate(true);
+          setValues({
+            name: lead.name,
+            dob: formatDate(lead.dob),
+            email: lead.email,
+            phone: lead.mobile,
+            address: lead.address,
+            date: formatDate(lead.date),
+            scheduled_to: formatDate(lead.scheduled_to),
+            course: lead.course,
+            branch: lead.branch,
+            status: lead.status,
+            comment: lead.comment
+          })
+          console.log("update true");
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    const fetchData = async () => {
+      await fetchLeadData();
+    };
+    fetchData();
     const fetchBranches = async () => {
       try {
         const response = await fetch('http://localhost:8080/api/branches');
         if (response.ok) {
           const json = await response.json();
           setBranches(json);
-          console.log(json); // Log the branches to verify the data
         } else {
           console.error('Error fetching branches:', response.statusText);
         }
@@ -38,7 +97,6 @@ export const AccountProfileDetails = () => {
         if (response.ok) {
           const json = await response.json();
           setStatuses(json);
-          console.log(json); // Log the status to verify the data
         } else {
           console.error('Error fetching  status:', response.statusText);
         }
@@ -52,7 +110,6 @@ export const AccountProfileDetails = () => {
         if (response.ok) {
           const json = await response.json();
           setCourses(json);
-          console.log(json); // Log the course to verify the data
         } else {
           console.error('Error fetching courses:', response.statusText);
         }
@@ -63,24 +120,9 @@ export const AccountProfileDetails = () => {
     fetchBranches()
     fetchStatuses()
     fetchCourses()
-  }, [])
+  }, [selectedLeadId, update])
 
-  const date = new Date();
-  const formattedDate = date.toISOString().split('T')[0];
 
-  const [values, setValues] = useState({
-    name: '',
-    dob: '2023-12-22',
-    email: '',
-    phone: '',
-    address: '',
-    date: formattedDate,
-    scheduled_to: formattedDate,
-    course: 'Computer Science',
-    branch: 'Colombo',
-    status: 'Registered',
-    comment: ''
-  });
 
 
   const handleChange = useCallback(
@@ -90,76 +132,91 @@ export const AccountProfileDetails = () => {
         [event.target.name]: event.target.value
       }));
     },
-    []
+    [selectedLeadId, update]
   );
 
-  useEffect(() => {
-    console.log('Updated values', values);
-  }, [values]);
+  // useEffect(() => {
+  //   console.log('Updated values', values);
+  // }, [values, update]);
 
   const handleSubmit = useCallback(
     async (event) => {
       event.preventDefault();
-
       try {
-        //insert student data
-        const studentResponse = await fetch('http://localhost:8080/api/students', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            name: values.name,
-            dob: values.dob,
-            contact_no: values.phone,
-            email: values.email,
-            address: values.address
+        if (!update) {
+          //insert student data
+          const studentResponse = await fetch('http://localhost:8080/api/students', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              name: values.name,
+              dob: values.dob,
+              contact_no: values.phone,
+              email: values.email,
+              address: values.address
+            })
+          });
+          if (!studentResponse.ok) {
+            console.error("Error inserting data to the student table", studentResponse.statusText)
+            return
+          }
+          const studentData = await studentResponse.json();
+          const { _id: student_id } = studentData;
+          console.log("Student ID:", student_id);
+          //insert lead data
+          const leadResponse = await fetch('http://localhost:8080/api/leads', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              "date": values.date,
+              "sheduled_to": values.scheduled_to,
+              "course_name": values.course,
+              "branch_name": values.branch,
+              "student_id": student_id
+            })
           })
-        });
-        if (!studentResponse.ok) {
-          console.error("Error inserting data to the student table", studentResponse.statusText)
-          return
-        }
-        const studentData = await studentResponse.json();
-        const { _id: student_id } = studentData;
-        console.log("Student ID:", student_id);
-        //insert lead data
-        const leadResponse = await fetch('http://localhost:8080/api/leads', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            "date": values.date,
-            "sheduled_to": values.scheduled_to,
-            "course_name": values.course,
-            "branch_name": values.branch,
-            "student_id": student_id
-          })
-        })
-        if (!leadResponse.ok) {
-          console.error("Error inserting data to the lead table", leadResponse.statusText);
-          return
-        }
-
-        const leadData = await leadResponse.json();
-        const { _id: lead_id } = leadData;
-        console.log("Lead ID:", lead_id);
-
-        //insert follow-up data
-        const followUpResponse = await fetch('http://localhost:8080/api/followUps', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(
-            {
-              "lead_id": lead_id,
-              "user": 'Hana Amaily',
-              "status": values.status,
+          if (!leadResponse.ok) {
+            console.error("Error inserting data to the lead table", leadResponse.statusText);
+            return
+          }
+          const leadData = await leadResponse.json();
+          const { _id: lead_id } = leadData;
+          console.log("Lead ID:", lead_id);
+          //insert follow-up data
+          const followUpResponse = await fetch('http://localhost:8080/api/followUps', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(
+              {
+                "lead_id": lead_id,
+                "user": 'Hana Amaily',
+                "status": values.status,
+                "comment": values.comment
+              }
+            )
+          });
+          if (!followUpResponse.ok) {
+            console.error("Error inserting followup data", followUpResponse.statusText);
+            return
+          }
+          console.log('Data inserted successfully!');
+        } else {
+          //update code
+          const selectedStatusId = statuses.find((option) => option.name === values.status)?._id;
+          const updateFollowup = await fetch(`http://localhost:8080/api/followUps/${lead.followUp_id}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              "status_id": selectedStatusId,
               "comment": values.comment
-            }
-          )
-        });
-        if (!followUpResponse.ok) {
-          console.error("Error inserting followup data", followUpResponse.statusText);
-          return
+            })
+          })
+          if (!updateFollowup.ok) {
+            console.error("Error updating followup data", updateFollowup.statusText);
+            return
+          }
+          console.log('Data updated successfully!');
         }
-        console.log('Data inserted successfully!');
         setValues({
           name: '',
           dob: formattedDate,
@@ -176,9 +233,8 @@ export const AccountProfileDetails = () => {
       } catch (error) {
         console.error('Error during data insertion:', error.message);
       }
-
     },
-    [values]
+    [values, update]
   );
 
   return (
@@ -188,10 +244,11 @@ export const AccountProfileDetails = () => {
       onSubmit={handleSubmit}
     >
       <Card>
-        <CardHeader
-          // subheader="The  can be edited"
+        {update ? (<CardHeader
+          title="Update Lead"
+        />) : (<CardHeader
           title=" Add New Lead"
-        />
+        />)}
         <CardContent sx={{ pt: 0 }}>
           <Box sx={{ m: -1.5 }}>
             <Grid
@@ -403,9 +460,15 @@ export const AccountProfileDetails = () => {
         </CardContent>
         <Divider />
         <CardActions sx={{ justifyContent: 'flex-end' }}>
-          <Button variant="contained" type='submit'>
-            Save details
-          </Button>
+          {update ? (
+            <Button variant="contained" type='submit'>
+              Update
+            </Button>
+          ) : (
+            <Button variant="contained" type='submit'>
+              Add Lead
+            </Button>
+          )}
         </CardActions>
       </Card>
     </form>
