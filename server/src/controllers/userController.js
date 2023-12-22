@@ -1,8 +1,8 @@
 require("dotenv").config();
 const User = require("../models/user");
 const User_type = require("../models/user_type");
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 async function getUsers(req, res) {
   try {
@@ -22,15 +22,22 @@ async function createUser(req, res) {
     const user_type_document = await User_type.findOne({ name: user_type });
 
     if (!user_type_document) {
-      return res.status(400).json({ error: `user_type not found: ${user_type}` });
+      return res
+        .status(400)
+        .json({ error: `user_type not found: ${user_type}` });
     }
 
     // Hash the password before saving
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Assign the user_type _id and hashed password to the user before saving
-    const user = new User({ name, password: hashedPassword, email, user_type: user_type_document._id });
-    
+    const user = new User({
+      name,
+      password: hashedPassword,
+      email,
+      user_type: user_type_document._id,
+    });
+
     // Save and return user with success message
     await user.save();
     res.status(201).json({ user, message: "User created!" });
@@ -44,8 +51,11 @@ async function login(req, res) {
   try {
     const { email, password } = req.body;
 
-    // Find the user with the given email
-    const user = await User.findOne({ email });
+    // Find the user with the given email and populate the 'user_type' field
+    const user = await User.findOne({ email }).populate({
+      path: "user_type",
+      model: "User_type",
+    });
 
     // Check if the user exists
     if (!user) {
@@ -59,8 +69,26 @@ async function login(req, res) {
       return res.status(401).json({ error: "Invalid email or password" });
     }
 
-    // Passwords match, generate JWT token
-    const token = jwt.sign({ userId: user._id, userEmail: user.email, userType: user.user_type }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    // Extract relevant information for the token payload
+    const { _id, email: userEmail, user_type: userType } = user;
+
+    // Extract permissions from user_type
+    const permissions = userType ? {
+      lead: userType.lead,
+      user: userType.user,
+      student: userType.student,
+      branch: userType.branch,
+      course: userType.course
+    } : {};
+
+    console.log(permissions);
+
+    // Create JWT token with user information and permissions
+    const token = jwt.sign(
+      { userId: _id, userEmail, userType, permissions },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
 
     // Return the token along with success message and user data
     res.status(200).json({ message: "Login successful", token });
@@ -72,7 +100,6 @@ async function login(req, res) {
 
 async function getUserById(req, res) {
   try {
-
     const { id } = req.params;
 
     // check if the id is valid object id
@@ -108,7 +135,9 @@ async function updateUserById(req, res) {
     const user_type_document = await User_type.findOne({ name: user_type });
 
     if (!user_type_document) {
-      return res.status(400).json({ error: `user_type not found: ${user_type}` });
+      return res
+        .status(400)
+        .json({ error: `user_type not found: ${user_type}` });
     }
 
     // Hash the password before updating
@@ -117,7 +146,12 @@ async function updateUserById(req, res) {
     // Update the user by ID
     const updatedUser = await User.findByIdAndUpdate(
       id,
-      { name, password: hashedPassword, email, user_type: user_type_document._id },
+      {
+        name,
+        password: hashedPassword,
+        email,
+        user_type: user_type_document._id,
+      },
       { new: true }
     );
 
@@ -132,7 +166,10 @@ async function updateUserById(req, res) {
   }
 }
 
-
 module.exports = {
-  getUsers, createUser, login, getUserById, updateUserById
+  getUsers,
+  createUser,
+  login,
+  getUserById,
+  updateUserById,
 };
