@@ -103,9 +103,9 @@ export const LeadsTable = (props) => {
                         direction="row"
                         spacing={2}
                       >
-                        <Avatar src={lead.avatar}>
+                        {/* <Avatar src={lead.avatar}>
                           {getInitials(lead.name)}
-                        </Avatar>
+                        </Avatar> */}
                         <Typography variant="subtitle2">
                           {lead.name}
                         </Typography>
