@@ -15,125 +15,39 @@ import Form from 'src/sections/account/leadForm';
 
 const now = new Date();
 
-const data = [
-  {
-    id: '5e887ac47eed253091be10cb',
-    name: 'Hiranya Semindi',
-    scheduled_at: '2023-02-12',
-    avatar: '/assets/avatars/avatar-carson-darrin.png',
-    scheduled_to: '2023-10-20',
-    course: 'Computer Science',
-    branch: 'Colombo',
-  },
-  {
-    id: '5e887b209c28ac3dd97f6db5',
-    name: 'Hiranya Semindi',
-    scheduled_at: '2023-02-12',
-    avatar: '/assets/avatars/avatar-fran-perez.png',
-    scheduled_to: '2023-10-20',
-    course: 'Computer Science',
-    branch: 'Colombo',
-  },
-  {
-    id: '5e887b7602bdbc4dbb234b27',
-    name: 'Hiranya Semindi',
-    scheduled_at: '2023-02-12',
-    avatar: '/assets/avatars/avatar-jie-yan-song.png',
-    scheduled_to: '2023-10-20',
-    course: 'Computer Science',
-    branch: 'Colombo',
-  },
-  {
-    id: '5e86809283e28b96d2d38537',
-    name: 'Hiranya Semindi',
-    scheduled_at: '2023-02-12',
-    avatar: '/assets/avatars/avatar-anika-visser.png',
-    scheduled_to: '2023-10-20',
-    course: 'Computer Science',
-    branch: 'Colombo',
-  },
-  {
-    id: '5e86805e2bafd54f66cc95c3',
-    name: 'Hiranya Semindi',
-    scheduled_at: '2023-02-12',
-    avatar: '/assets/avatars/avatar-miron-vitold.png',
-    scheduled_to: '2023-10-20',
-    course: 'Computer Science',
-    branch: 'Colombo',
-  },
-  {
-    id: '5e887a1fbefd7938eea9c981',
-    name: 'Hiranya Semindi',
-    scheduled_at: '2023-02-12',
-    avatar: '/assets/avatars/avatar-penjani-inyene.png',
-    scheduled_to: '2023-10-20',
-    course: 'Computer Science',
-    branch: 'Colombo',
-  },
-  {
-    id: '5e887d0b3d090c1b8f162003',
-    name: 'Hiranya Semindi',
-    scheduled_at: '2023-02-12',
-    avatar: '/assets/avatars/avatar-omar-darboe.png',
-    scheduled_to: '2023-10-20',
-    course: 'Computer Science',
-    branch: 'Colombo',
-  },
-  {
-    id: '5e88792be2d4cfb4bf0971d9',
-    name: 'Hiranya Semindi',
-    scheduled_at: '2023-02-12',
-    avatar: '/assets/avatars/avatar-siegbert-gottfried.png',
-    scheduled_to: '2023-10-20',
-    course: 'Computer Science',
-    branch: 'Colombo',
-  },
-  {
-    id: '5e8877da9a65442b11551975',
-    name: 'Hiranya Semindi',
-    scheduled_at: '2023-02-12',
-    avatar: '/assets/avatars/avatar-iulia-albu.png',
-    scheduled_to: '2023-10-20',
-    course: 'Computer Science',
-    branch: 'Colombo',
-  },
-  {
-    id: '5e8680e60cba5019c5ca6fda',
-    name: 'Hiranya Semindi',
-    scheduled_at: '2023-02-12',
-    avatar: '/assets/avatars/avatar-nasimiyu-danai.png',
-    scheduled_to: '2023-10-20',
-    course: 'Computer Science',
-    branch: 'Colombo',
-  }
-];
-
 const useLeads = (page, rowsPerPage) => {
-  return useMemo(
-    () => {
-      return applyPagination(data, page, rowsPerPage);
-    },
-    [page, rowsPerPage]
-  );
+  const [data, setData] = useState([]);
+
+  const applyPagination = (page, rowsPerPage) => {
+    return data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+  };
+
+  const leads = useMemo(() => {
+    // console.log('Processed Leads:', applyPagination(page, rowsPerPage));
+    return applyPagination(page, rowsPerPage);
+  }, [page, rowsPerPage, data]);
+
+  return {
+    data,
+    setData,
+    leads,
+    applyPagination,
+  };
 };
 
 const useLeadIds = (leads) => {
-  return useMemo(
-    () => {
-      return leads.map((lead) => lead.id);
-    },
-    [leads]
-  );
+  return leads.map((lead) => lead.id);
 };
 
 const Page = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const leads = useLeads(page, rowsPerPage);
+  const { data, setData, leads, applyPagination } = useLeads(page, rowsPerPage);
   const leadsIds = useLeadIds(leads);
   const leadsSelection = useSelection(leadsIds);
   const [selectedLeadId, setSelectedLeadId] = useState(null);
   const [showUpdateForm, setShowUpdateForm] = useState(false);
+
 
   const handlePageChange = useCallback(
     (event, value) => {
@@ -154,6 +68,7 @@ const Page = () => {
       console.log('Row clicked. Lead ID:', id);
       setSelectedLeadId(id);
       setShowUpdateForm(true);
+
     },
     [setSelectedLeadId, setShowUpdateForm]
   );
@@ -174,34 +89,90 @@ const Page = () => {
 
   const handleSelectAll = useCallback(() => {
     leadsSelection.handleSelectAll();
-  }, [leadsSelection]);
+  }, [leadsSelection]
+  );
 
   const handleDeselectAll = useCallback(() => {
     leadsSelection.handleDeselectAll();
-  }, [leadsSelection]);
+  }, [leadsSelection]
+  );
 
   const selectedLead = useMemo(() => {
     return data.find((lead) => lead.id === selectedLeadId);
-  }, [selectedLeadId]);
+  }, [selectedLeadId]
+  );
 
   useEffect(() => {
-    // Fetch customer details based on the selected email here
-    // You can use an API call or any other method to get the details
-    // For now, let's just log the details to the console
-    console.log('useEffect triggered');
-    if (selectedLead) {
-      console.log('Selected Lead Details:', selectedLead);
 
+    const fetchLeads = async () => {
+      try {
+        const response = await fetch('http://localhost:8080/api/leads');
+        const leadData = await response.json();
+        console.log(leadData);
+
+        const fetchAdditionalInfo = async (lead) => {
+          const studentResponse = await fetch(`http://localhost:8080/api/students/${lead.student_id}`);
+          const studentData = await studentResponse.json();
+
+          const courseResponse = await fetch(`http://localhost:8080/api/courses/${lead.course_id}`);
+          const courseData = await courseResponse.json();
+
+          const branchResponse = await fetch(`http://localhost:8080/api/branches/${lead.branch_id}`);
+          const branchData = await branchResponse.json();
+
+          const followUpResponse = await fetch(`http://localhost:8080/api/followups/by-lead/${lead._id}`);
+          const followUpData = await followUpResponse.json();
+
+          const statusResponse = await fetch(`http://localhost:8080/api/status/${followUpData[0].status_id}`);
+          const statusDta = await statusResponse.json();
+
+          return {
+            id: lead._id,
+            scheduled_at: lead.sheduled_at,
+            scheduled_to: lead.sheduled_to,
+            date: lead.date,
+            name: studentData.name,
+            dob: studentData.dob,
+            email: studentData.email,
+            mobile: studentData.contact_no,
+            address: studentData.address,
+            course: courseData.name,
+            branch: branchData.name,
+            comment: followUpData[0].comment,
+            status: statusDta.name,
+            followUp_id: followUpData[0]._id
+          };
+        };
+
+        // Fetch additional information for all leads concurrently
+        const additionalInfoPromises = leadData.map(fetchAdditionalInfo);
+        const additionalInfo = await Promise.all(additionalInfoPromises);
+
+
+        setData(additionalInfo);
+
+        // console.log("Additional info data", additionalInfo);
+      } catch (error) {
+        console.error('Error fetching leads:', error);
+      }
+    };
+
+    fetchLeads();
+    
+  }, [setData, page, rowsPerPage]);
+
+  // Separate useEffect for handling selectedLeadId changes
+  useEffect(() => {
+    if (selectedLeadId) {
+      // console.log('Selected Lead Details:', selectedLeadId, selectedLead);
     }
-  }, [selectedLead]);
-
-  console.log('Page component rendering');
+  }, [selectedLeadId]);
 
   return (
     <>
       {showUpdateForm && selectedLead ? (
         <Form
-          lead={selectedLead}
+          lead={selectedLead} selectedLeadId={selectedLeadId}
         />
       ) : (
         <>
@@ -282,6 +253,7 @@ const Page = () => {
                   page={page}
                   rowsPerPage={rowsPerPage}
                   selected={leadsSelection.selected}
+
                 />
 
               </Stack>
