@@ -4,53 +4,57 @@ import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
 import { AccountProfile } from 'src/sections/account/account-profile';
 import { AccountProfileDetails } from 'src/sections/account/account-profile-details';
 
-const Form = () => (
-    <>
-        <Head>
-            <title>
-                Account | Devias Kit
-            </title>
-        </Head>
-        <Box
-            component="main"
-            sx={{
-                flexGrow: 1,
-                py: 8
-            }}
-        >
-            <Container maxWidth="lg">
-                <Stack spacing={3}>
-                    <div>
-                        <Typography variant="h4">
-                            Lead
-                        </Typography>
-                    </div>
-                    <div>
+const Form = ({lead, selectedLeadId}) => (
+<>
+    <Head>
+        <title>
+            Account | Devias Kit
+        </title>
+    </Head>
+    
+    <Box
+        component="main"
+        sx={{
+            flexGrow: 1,
+            py: 8
+        }}
+    >
+        <Container maxWidth="lg">
+            <Stack spacing={3}>
+                <div>
+                    <Typography variant="h4">
+                        Lead
+                    </Typography>
+                </div>
+                <div>
+                    <Grid
+                        container
+                        spacing={3}
+                    >
                         <Grid
-                            container
-                            spacing={3}
+                            xs={12}
+                            md={6}
+                            lg={4}
                         >
-                            <Grid
-                                xs={12}
-                                md={6}
-                                lg={4}
-                            >
-                                <AccountProfile />
-                            </Grid>
-                            <Grid
-                                xs={12}
-                                md={6}
-                                lg={8}
-                            >
-                                <AccountProfileDetails />
-                            </Grid>
+                            <AccountProfile />
                         </Grid>
-                    </div>
-                </Stack>
-            </Container>
-        </Box>
-    </>
+                        <Grid
+                            xs={12}
+                            md={6}
+                            lg={8}
+                        >
+                            <AccountProfileDetails selectedLeadId={selectedLeadId} lead={lead} />
+                        </Grid>
+                    </Grid>
+                </div>
+            </Stack>
+        </Container>
+    </Box>
+</>
 );
+
+
+
 
 Form.getLayout = (form) => (
     <DashboardLayout>
