@@ -1,6 +1,7 @@
 const Status = require('../models/status')
+const mongoose = require('mongoose')
 
-async function getStatus(req, res) {
+async function getAllStatus(req, res) {
     try {
         const statuses = await Status.find()
         res.status(200).json(statuses)
@@ -11,6 +12,24 @@ async function getStatus(req, res) {
 
 }
 
+async function getStatus(req, res) {
+    const { id } = req.params
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        res.status(404).json({ error: "No such Status" })
+    }
+
+    const status = await Status.findById({ _id: id })
+
+    if (!status) {
+        res.status(400).json({ error: "No such Status" })
+    }
+
+    res.status(200).json(status)
+
+}
+
 module.exports = {
-    getStatus,
+    getAllStatus,
+    getStatus
 }
