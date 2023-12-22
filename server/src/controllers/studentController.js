@@ -1,4 +1,5 @@
 const Student = require("../models/student");
+const mongoose = require('mongoose')
 
 async function getStudents(req, res) {
   try {
@@ -20,7 +21,25 @@ async function addStudent(req, res) {
   }
 }
 
+async function getStudent(req, res) {
+  const { id } = req.params
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+      res.status(404).json({ error: "No such Student" })
+  }
+
+  const student = await Student.findById({ _id: id })
+
+  if (!student) {
+      res.status(400).json({ error: "No such Student" })
+  }
+
+  res.status(200).json(student)
+
+}
+
 module.exports = {
   getStudents,
-  addStudent
+  addStudent,
+  getStudent
 };
