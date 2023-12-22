@@ -4,7 +4,7 @@ const Status = require('../models/status')
 const User = require('../models/user')
 
 //get all followUps
-async function getFollowUp(req, res) {
+async function getFollowUps(req, res) {
     try {
         const follow_up = await FollowUp.find()
         res.status(200).json(follow_up)
@@ -64,8 +64,43 @@ async function updateFollowUp(req, res) {
 
 }
 
+
+//get followup
+async function getFollowUp(req, res) {
+    const { id } = req.params
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        res.status(404).json({ error: "No such followup" })
+    }
+
+    const followup = await FollowUp.findById({ _id: id })
+
+    if (!followup) {
+        res.status(400).json({ error: "No such followup" })
+    }
+
+    res.status(200).json(followup)
+
+}
+
+async function getFollowUpsByLead(req, res) {
+    const { lead_id } = req.params;
+
+    try {
+        const followUps = await FollowUp.find({ lead_id });
+        res.status(200).json(followUps);
+    } catch (error) {
+        console.log("Error fetching follow-ups by lead_id", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+}
+
+
+
 module.exports = {
-    getFollowUp,
+    getFollowUps,
     addFollowUp,
-    updateFollowUp
+    updateFollowUp,
+    getFollowUp,
+    getFollowUpsByLead
 }
