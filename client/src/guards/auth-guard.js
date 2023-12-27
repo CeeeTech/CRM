@@ -1,57 +1,79 @@
-import { useEffect, useRef, useState } from 'react';
-import { useRouter } from 'next/router';
-import PropTypes from 'prop-types';
-import { useAuthContext } from 'src/contexts/auth-context';
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import PropTypes from "prop-types";
+import { useAuthContext } from "src/contexts/auth-context";
 
 export const AuthGuard = (props) => {
-  const { children } = props;
+  const { children, requiredPermissions, allowedUserTypes } = props;
   const router = useRouter();
-  const { isAuthenticated } = useAuthContext();
-  const ignore = useRef(false);
+  const { isAuthenticated, user } = useAuthContext();
   const [checked, setChecked] = useState(false);
 
-  // Only do authentication check on component mount.
-  // This flow allows you to manually redirect the user after sign-out, otherwise this will be
-  // triggered and will automatically redirect to sign-in page.
+  useEffect(() => {
+    let isMounted = true;
 
-  useEffect(
-    () => {
-      if (!router.isReady) {
-        return;
-      }
-
-      // Prevent from calling twice in development mode with React.StrictMode enabled
-      if (ignore.current) {
-        return;
-      }
-
-      ignore.current = true;
-
+    const checkAccess = () => {
       if (!isAuthenticated) {
-        console.log('Not authenticated, redirecting');
-        router
-          .replace({
-            pathname: '/auth/login',
-            query: router.asPath !== '/' ? { continueUrl: router.asPath } : undefined
-          })
-          .catch(console.error);
+        console.log("Not authenticated, redirecting");
+        redirectToLogin();
+      } else if (
+        (requiredPermissions && !hasRequiredPermissions(user, requiredPermissions)) ||
+        (allowedUserTypes && !isUserTypeAllowed(user, allowedUserTypes))
+      ) {
+        console.log("Unauthorized, redirecting");
+        redirectToUnauthorized();
       } else {
-        setChecked(true);
+        if (isMounted) {
+          setChecked(true);
+        }
       }
-    },
-    [router.isReady]
-  );
+    };
+
+    if (isAuthenticated) {
+      checkAccess();
+    }
+
+    return () => {
+      isMounted = false;
+    };
+  }, [isAuthenticated, user, requiredPermissions, allowedUserTypes]);
+
+  const redirectToLogin = () => {
+    router
+      .replace({
+        pathname: "/auth/login",
+        query: router.asPath !== "/" ? { continueUrl: router.asPath } : undefined,
+      })
+      .catch(console.error);
+  };
+
+  const redirectToUnauthorized = () => {
+    router.replace("/404").catch(console.error);
+  };
+
+  const hasRequiredPermissions = (user, requiredPermissions) => {
+    const userPermissions = user?.permissions || {};
+    const userPermissionArray = Object.values(userPermissions).flatMap((permissions) =>
+      permissions.split(",")
+    );
+    return requiredPermissions.every((permission) => userPermissionArray.includes(permission));
+  };
+
+  const isUserTypeAllowed = (user, allowedUserTypes) => {
+    const userType = user?.userType || {};
+    const userTypeName = userType.name || '';
+    return allowedUserTypes.includes(userTypeName);
+  };
 
   if (!checked) {
     return null;
   }
 
-  // If got here, it means that the redirect did not occur, and that tells us that the user is
-  // authenticated / authorized.
-
   return children;
 };
 
 AuthGuard.propTypes = {
-  children: PropTypes.node
+  children: PropTypes.node,
+  requiredPermissions: PropTypes.arrayOf(PropTypes.string),
+  allowedUserTypes: PropTypes.arrayOf(PropTypes.string),
 };
