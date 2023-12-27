@@ -15,6 +15,7 @@ import {
 import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
 import { CompanyCard } from 'src/sections/companies/company-card';
 import { CompaniesSearch } from 'src/sections/companies/companies-search';
+import { withAuthGuard } from 'src/hocs/with-auth-guard';
 
 const companies = [
   {
@@ -165,10 +166,12 @@ const Page = () => (
   </>
 );
 
-Page.getLayout = (page) => (
+const WrappedPage = withAuthGuard(Page, ["read", "read-all"], ["counselor", "admin"]);
+
+WrappedPage.getLayout = (page) => (
   <DashboardLayout>
     {page}
   </DashboardLayout>
 );
 
-export default Page;
+export default WrappedPage;
