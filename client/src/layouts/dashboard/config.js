@@ -16,7 +16,8 @@ export const items = [
       <SvgIcon fontSize="small">
         <ChartBarIcon />
       </SvgIcon>
-    )
+    ),
+    permissions : ['admin', 'sup_admin', 'supervisor', 'gen-supervisor', 'counselor', 'user'],
   },
   {
     title: 'Customers',
@@ -25,7 +26,8 @@ export const items = [
       <SvgIcon fontSize="small">
         <UsersIcon />
       </SvgIcon>
-    )
+    ),
+    permissions : ['admin', 'sup_admin', 'supervisor', 'gen-supervisor'],
   },
   {
     title: 'Companies',
@@ -34,7 +36,8 @@ export const items = [
       <SvgIcon fontSize="small">
         <ShoppingBagIcon />
       </SvgIcon>
-    )
+    ),
+    permissions : ['admin'],
   },
   {
     title: 'Account',
@@ -43,7 +46,8 @@ export const items = [
       <SvgIcon fontSize="small">
         <UserIcon />
       </SvgIcon>
-    )
+    ),
+    permissions : ['admin', 'sup_admin', 'supervisor', 'gen-supervisor', 'counselor', 'user'],
   },
   {
     title: 'Settings',
@@ -52,7 +56,8 @@ export const items = [
       <SvgIcon fontSize="small">
         <CogIcon />
       </SvgIcon>
-    )
+    ),
+    permissions : ['admin', 'sup_admin', 'supervisor', 'gen-supervisor', 'counselor', 'user'],
   },
   {
     title: 'Login',
@@ -61,7 +66,8 @@ export const items = [
       <SvgIcon fontSize="small">
         <LockClosedIcon />
       </SvgIcon>
-    )
+    ),
+    permissions : ['admin', 'sup_admin', 'supervisor', 'gen-supervisor', 'counselor', 'user'],
   },
   {
     title: 'Register',
@@ -70,7 +76,8 @@ export const items = [
       <SvgIcon fontSize="small">
         <UserPlusIcon />
       </SvgIcon>
-    )
+    ),
+    permissions : ['admin', 'sup_admin', 'supervisor', 'gen-supervisor', 'counselor', 'user'],
   },
   {
     title: 'Error',
@@ -79,6 +86,7 @@ export const items = [
       <SvgIcon fontSize="small">
         <XCircleIcon />
       </SvgIcon>
-    )
+    ),
+    permissions : ['user'],
   }
 ];

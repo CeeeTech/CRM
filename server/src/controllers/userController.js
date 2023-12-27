@@ -73,13 +73,15 @@ async function login(req, res) {
     const { _id, email: userEmail, user_type: userType } = user;
 
     // Extract permissions from user_type
-    const permissions = userType ? {
-      lead: userType.lead,
-      user: userType.user,
-      student: userType.student,
-      branch: userType.branch,
-      course: userType.course
-    } : {};
+    const permissions = userType
+      ? {
+          lead: userType.lead,
+          user: userType.user,
+          student: userType.student,
+          branch: userType.branch,
+          course: userType.course,
+        }
+      : {};
 
     console.log(permissions);
 
@@ -89,6 +91,9 @@ async function login(req, res) {
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
+
+    console.log("token", token);
+    console.log("decoded token", jwt.decode(token));
 
     // Return the token along with success message and user data
     res.status(200).json({ message: "Login successful", token });

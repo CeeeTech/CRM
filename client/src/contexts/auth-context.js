@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useReducer, useRef } from "react";
 import PropTypes from "prop-types";
+import jwt from "jsonwebtoken";
 
 const HANDLERS = {
   INITIALIZE: "INITIALIZE",
@@ -19,8 +20,8 @@ const handlers = {
 
     return {
       ...state,
-      ...// if payload (user) is provided, then is authenticated
-      (user
+      // If payload (user) is provided, then isAuthenticated
+      ...(user
         ? {
             isAuthenticated: true,
             isLoading: false,
@@ -70,15 +71,31 @@ export const AuthProvider = (props) => {
     initialized.current = true;
 
     let isAuthenticated = false;
+    let decodedToken = null;
 
     try {
       isAuthenticated = window.sessionStorage.getItem("authenticated") === "true";
+
+      // If authenticated, try to retrieve the token
+      if (isAuthenticated) {
+        const token = window.sessionStorage.getItem("token");
+
+        // Decode the token to get user information
+        decodedToken = jwt.decode(token);
+
+        // Store the decoded token in the context state
+        dispatch({
+          type: HANDLERS.INITIALIZE,
+          payload: decodedToken,
+        });
+      }
     } catch (err) {
       console.error(err);
     }
 
     dispatch({
       type: HANDLERS.INITIALIZE,
+      payload: decodedToken,
     });
   };
 
@@ -130,6 +147,10 @@ export const AuthProvider = (props) => {
         console.error(err);
       }
 
+      // Log the decoded token to check its structure
+      const decodedToken = jwt.decode(data.token);
+      console.log("Decoded Token:", decodedToken);
+
       // Dispatch action to update the context state with the authentication status
       dispatch({
         type: HANDLERS.SIGN_IN,
@@ -154,7 +175,7 @@ export const AuthProvider = (props) => {
     <AuthContext.Provider
       value={{
         ...state,
-        // skip,
+        decodedToken: state.user, // assuming user contains decoded token
         signIn,
         signUp,
         signOut,
