@@ -8,8 +8,11 @@ import {
   CardHeader,
   Divider,
   TextField,
+  SvgIcon,
   Unstable_Grid2 as Grid
 } from '@mui/material';
+import PlusIcon from '@heroicons/react/24/solid/PlusIcon';
+
 
 export const AccountProfileDetails = ({ selectedLeadId, lead }) => {
 
@@ -19,6 +22,7 @@ export const AccountProfileDetails = ({ selectedLeadId, lead }) => {
   const [statuses, setStatuses] = useState(null);
   const [courses, setCourses] = useState(null);
   const [update, setUpdate] = useState(false);
+  const [statusForm, setStatusForm] = useState(false);
 
   const date = new Date();
   const formattedDate = date.toISOString().split('T')[0];
@@ -28,8 +32,8 @@ export const AccountProfileDetails = ({ selectedLeadId, lead }) => {
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
     const year = date.getFullYear();
-    const formattedDate = `${year}-${month}-${day}`;
-    return formattedDate;
+    const formattedD = `${year}-${month}-${day}`;
+    return formattedD;
   }
 
   const [values, setValues] = useState({
@@ -43,8 +47,12 @@ export const AccountProfileDetails = ({ selectedLeadId, lead }) => {
     course: 'Computer Science',
     branch: 'Colombo',
     status: 'Registered',
-    comment: ''
+    comment: '',
+    updateDate: formattedDate
   });
+
+  const [selectedBranchId, setSelectedBranchId] = useState('');
+  const [selectedCourseId, setSelectedCourseId] = useState('');
 
 
   useEffect(() => {
@@ -66,7 +74,8 @@ export const AccountProfileDetails = ({ selectedLeadId, lead }) => {
             course: lead.course,
             branch: lead.branch,
             status: lead.status,
-            comment: lead.comment
+            comment: lead.comment,
+            updateDate: formattedDate
           })
           console.log("update true");
         }
@@ -120,19 +129,26 @@ export const AccountProfileDetails = ({ selectedLeadId, lead }) => {
     fetchBranches()
     fetchStatuses()
     fetchCourses()
+    console.log(formattedDate)
   }, [selectedLeadId, update])
-
-
 
 
   const handleChange = useCallback(
     (event) => {
+      const { name, value } = event.target;
       setValues((prevState) => ({
         ...prevState,
-        [event.target.name]: event.target.value
+        [name]: value
       }));
+      if (name === 'branch') {
+        const selectedBranch = branches.find((branch) => branch.name === value);
+        setSelectedBranchId(selectedBranch ? selectedBranch._id : '');
+      } else if (name === 'course') {
+        const selectedCourse = courses.find((course) => course.name === value);
+        setSelectedCourseId(selectedCourse ? selectedCourse._id : '');
+      }
     },
-    [selectedLeadId, update]
+    [branches, courses, selectedLeadId, update]
   );
 
   // useEffect(() => {
@@ -208,13 +224,32 @@ export const AccountProfileDetails = ({ selectedLeadId, lead }) => {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               "status_id": selectedStatusId,
-              "comment": values.comment
+              "comment": values.comment,
+              "user_id": '657c313de6434e7419e70bec',
+              date: values.updateDate
             })
           })
           if (!updateFollowup.ok) {
-            console.error("Error updating followup data", updateFollowup.statusText);
+            console.error("Error upFdating followup data", updateFollowup.statusText);
             return
           }
+
+          const updateLead = await fetch(`http://localhost:8080/api/leads/${selectedLeadId}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              // "date": values.date,
+              "sheduled_to": values.scheduled_to,
+              "course_id": selectedCourseId,
+              "branch_id": selectedBranchId,
+            })
+          })
+          if (!updateLead.ok) {
+            console.error("Error updating lead data", updateLead.statusText);
+            return
+          }
+
+          console.log(selectedCourseId, selectedBranchId);
           console.log('Data updated successfully!');
         }
         setValues({
@@ -228,7 +263,8 @@ export const AccountProfileDetails = ({ selectedLeadId, lead }) => {
           course: 'Computer Science',
           branch: 'Colombo',
           status: 'Registered',
-          comment: ''
+          comment: '',
+          updateDate: formattedDate
         })
       } catch (error) {
         console.error('Error during data insertion:', error.message);
@@ -411,6 +447,15 @@ export const AccountProfileDetails = ({ selectedLeadId, lead }) => {
                   )}
                 </TextField>
               </Grid>
+            </Grid>
+            {update == true ? (<Box sx={{ textAlign: 'center', mt: 2, mb: 2 }}>
+              <Button onClick={()=>{setStatusForm(true)}} variant="outlined">
+                <PlusIcon />
+              </Button>
+            </Box>) : (<></>)}
+
+            {statusForm == true || update == false ? (<Grid container spacing={3}>
+              {/* ............................ */}
               <Grid
                 xs={12}
                 md={6}
@@ -443,6 +488,20 @@ export const AccountProfileDetails = ({ selectedLeadId, lead }) => {
               </Grid>
               <Grid
                 xs={12}
+                md={6}
+              >
+                <TextField
+                  fullWidth
+                  label="Update Date"
+                  name="updateDate"
+                  onChange={handleChange}
+                  type="date"
+                  value={values.updateDate}
+                  required
+                />
+              </Grid>
+              <Grid
+                xs={12}
                 md={12}
               >
                 <TextField
@@ -455,7 +514,9 @@ export const AccountProfileDetails = ({ selectedLeadId, lead }) => {
                   required
                 />
               </Grid>
-            </Grid>
+            </Grid>) : (<></>)}
+
+            {/* ............................ */}
           </Box>
         </CardContent>
         <Divider />
