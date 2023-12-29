@@ -11,12 +11,13 @@ export const AuthGuard = (props) => {
 
   useEffect(() => {
     let isMounted = true;
-
-    const checkAccess = () => {
+  
+    const checkAccess = async () => {
       if (!isAuthenticated) {
         console.log("Not authenticated, redirecting");
         redirectToLogin();
       } else if (
+        (!user || !user.permissions) ||  // Check if user or user permissions are not available
         (requiredPermissions && !hasRequiredPermissions(user, requiredPermissions)) ||
         (allowedUserTypes && !isUserTypeAllowed(user, allowedUserTypes))
       ) {
@@ -28,15 +29,15 @@ export const AuthGuard = (props) => {
         }
       }
     };
-
+  
     if (isAuthenticated) {
       checkAccess();
     }
-
+  
     return () => {
       isMounted = false;
     };
-  }, [isAuthenticated, user, requiredPermissions, allowedUserTypes]);
+  }, [isAuthenticated, user, requiredPermissions, allowedUserTypes]);  
 
   const redirectToLogin = () => {
     router

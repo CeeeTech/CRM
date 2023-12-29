@@ -80,9 +80,17 @@ const Page = () => {
 
   useEffect(() => {
     console.log(user);
-    const leadPermissionsArray = user.permissions.lead.split(",");
-    setLeadPermissions(leadPermissionsArray);
-  }, [user]);
+  
+    // Check if user is not null or undefined, and if permissions and lead exist
+    if (user && user.permissions && user.permissions.lead) {
+      const leadPermissionsArray = user.permissions.lead.split(",");
+      setLeadPermissions(leadPermissionsArray);
+    } else {
+      // Handle the case where user or user.permissions is null or undefined
+      // For example, you can set leadPermissions to an empty array
+      setLeadPermissions([]);
+    }
+  }, [user]);  
 
   return (
     <>
@@ -163,7 +171,7 @@ const Page = () => {
     </>
   );
 };
-const WrappedPage = withAuthGuard(Page, ["read", "read-all"], ["counselor", "admin"]);
+const WrappedPage = withAuthGuard(Page, ["read", "read-all"], ["counselor"]);
 
 WrappedPage.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
 
