@@ -1,4 +1,5 @@
 const User = require("../models/user");
+const mongoose = require('mongoose');
 
 async function getUsers(req, res) {
   try {
@@ -10,6 +11,25 @@ async function getUsers(req, res) {
   }
 }
 
+//get one user
+async function getUser(req, res) {
+  const { id } = req.params
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    res.status(404).json({ error: "No such User" })
+  }
+
+  const user = await User.findById({ _id: id })
+
+  if (!user) {
+    res.status(400).json({ error: "No such User" })
+  }
+
+  res.status(200).json(user)
+
+}
+
 module.exports = {
   getUsers,
+  getUser
 };
