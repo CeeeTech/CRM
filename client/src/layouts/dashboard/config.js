@@ -101,7 +101,7 @@ export const items = [
   },
   {
     title: 'Register',
-    path: '/auth/register',
+    path: '/auth/add-new-user',
     icon: (
       <SvgIcon fontSize="small">
         <UserPlusIcon />

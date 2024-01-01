@@ -127,6 +127,7 @@ const Page = () => (
                   </SvgIcon>
                 )}
                 variant="contained"
+                href="/auth/add-new-course"
               >
                 Add Cource
               </Button>

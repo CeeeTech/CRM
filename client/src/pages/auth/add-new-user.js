@@ -25,8 +25,8 @@ const Page = () => {
   const [method, setMethod] = useState('email');
   const formik = useFormik({
     initialValues: {
-      email: 'demo@devias.io',
-      password: 'Password123!',
+      email: '',
+      password: '',
       submit: null
     },
     validationSchema: Yup.object({
@@ -71,7 +71,7 @@ const Page = () => {
     <>
       <Head>
         <title>
-         Update Users
+         Add Users
         </title>
       </Head>
       <Box
@@ -97,20 +97,7 @@ const Page = () => {
               sx={{ mb: 3 }}
             >
               <Typography variant="h4">
-                Update Users
-              </Typography>
-              <Typography
-                color="text.secondary"
-                variant="body2"
-              >
-                <Link
-                  component={NextLink}
-                  href="/auth/login"
-                  underline="hover"
-                  variant="subtitle2"
-                >
-                  Login
-                </Link>
+                Add Users
               </Typography>
             </Stack>
             <Tabs
@@ -190,7 +177,7 @@ const Page = () => {
                   type="submit"
                   variant="contained"
                 >
-                  Update User details
+                  Save User details
                 </Button>
               </form>
             )}
