@@ -29,29 +29,16 @@ export const OverviewTasksProgress = (props) => {
               gutterBottom
               variant="overline"
             >
-              Task Progress
+              WhatsApp & SMS
             </Typography>
             <Typography variant="h4">
-              {value}%
+              {value}
             </Typography>
           </Stack>
-          <Avatar
-            sx={{
-              backgroundColor: 'warning.main',
-              height: 56,
-              width: 56
-            }}
-          >
-            <SvgIcon>
-              <ListBulletIcon />
-            </SvgIcon>
-          </Avatar>
+          
         </Stack>
         <Box sx={{ mt: 3 }}>
-          <LinearProgress
-            value={value}
-            variant="determinate"
-          />
+          
         </Box>
       </CardContent>
     </Card>

@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import CurrencyDollarIcon from '@heroicons/react/24/solid/CurrencyDollarIcon';
 import { Avatar, Card, CardContent, Stack, SvgIcon, Typography } from '@mui/material';
 
-export const OverviewTotalProfit = (props) => {
+export const OverviewTotalProfit1 = (props) => {
   const { value, sx } = props;
 
   return (
@@ -19,7 +19,7 @@ export const OverviewTotalProfit = (props) => {
               color="text.secondary"
               variant="overline"
             >
-              Schedule Meetings
+              Course details sent
             </Typography>
             <Typography variant="h4">
               {value}
@@ -32,7 +32,7 @@ export const OverviewTotalProfit = (props) => {
   );
 };
 
-OverviewTotalProfit.propTypes = {
+OverviewTotalProfit1.propTypes = {
   value: PropTypes.string,
   sx: PropTypes.object
 };

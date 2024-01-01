@@ -13,9 +13,6 @@ export const AccountPopover = (props) => {
     () => {
       onClose?.();
       auth.signOut();
-      // remove local storage token and redirect to login page
-      window.sessionStorage.setItem("token", "null");
-      window.sessionStorage.setItem("authenticated", "false")
       router.push('/auth/login');
     },
     [onClose, auth, router]

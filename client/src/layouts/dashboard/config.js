@@ -10,34 +10,67 @@ import { SvgIcon } from '@mui/material';
 
 export const items = [
   {
-    title: 'Overview',
+    title: 'Dashbord',
     path: '/',
     icon: (
       <SvgIcon fontSize="small">
         <ChartBarIcon />
       </SvgIcon>
-    ),
-    permissions : ['admin', 'sup_admin', 'supervisor', 'gen-supervisor', 'counselor', 'user'],
+    )
   },
   {
-    title: 'Customers',
-    path: '/customers',
+    title: 'Students',
+    path: '/students',
     icon: (
       <SvgIcon fontSize="small">
         <UsersIcon />
       </SvgIcon>
-    ),
-    permissions : ['admin', 'sup_admin', 'supervisor', 'gen-supervisor'],
+    )
   },
   {
-    title: 'Companies',
-    path: '/companies',
+    title: 'Meetings',
+    path: '/meeting',
+    icon: (
+      <SvgIcon fontSize="small">
+        <UsersIcon />
+      </SvgIcon>
+    )
+  },
+  {
+    title: 'Reports',
+    path: '/reports',
+    icon: (
+      <SvgIcon fontSize="small">
+        <UsersIcon />
+      </SvgIcon>
+    )
+  },
+  {
+    title: 'Branches',
+    path: '/branches',
     icon: (
       <SvgIcon fontSize="small">
         <ShoppingBagIcon />
       </SvgIcon>
-    ),
-    permissions : ['admin'],
+    )
+  },
+  {
+    title: 'leads',
+    path: '/leads',
+    icon: (
+      <SvgIcon fontSize="small">
+        <ShoppingBagIcon />
+      </SvgIcon>
+    )
+  },
+  {
+    title: 'Cources',
+    path: '/cources',
+    icon: (
+      <SvgIcon fontSize="small">
+        <ShoppingBagIcon />
+      </SvgIcon>
+    )
   },
   {
     title: 'Account',
@@ -46,8 +79,7 @@ export const items = [
       <SvgIcon fontSize="small">
         <UserIcon />
       </SvgIcon>
-    ),
-    permissions : ['admin', 'sup_admin', 'supervisor', 'gen-supervisor', 'counselor', 'user'],
+    )
   },
   {
     title: 'Settings',
@@ -56,8 +88,7 @@ export const items = [
       <SvgIcon fontSize="small">
         <CogIcon />
       </SvgIcon>
-    ),
-    permissions : ['admin', 'sup_admin', 'supervisor', 'gen-supervisor', 'counselor', 'user'],
+    )
   },
   {
     title: 'Login',
@@ -66,8 +97,7 @@ export const items = [
       <SvgIcon fontSize="small">
         <LockClosedIcon />
       </SvgIcon>
-    ),
-    permissions : ['admin', 'sup_admin', 'supervisor', 'gen-supervisor', 'counselor', 'user'],
+    )
   },
   {
     title: 'Register',
@@ -76,17 +106,6 @@ export const items = [
       <SvgIcon fontSize="small">
         <UserPlusIcon />
       </SvgIcon>
-    ),
-    permissions : ['admin', 'sup_admin', 'supervisor', 'gen-supervisor', 'counselor', 'user'],
-  },
-  {
-    title: 'Error',
-    path: '/404',
-    icon: (
-      <SvgIcon fontSize="small">
-        <XCircleIcon />
-      </SvgIcon>
-    ),
-    permissions : ['user'],
+    )
   }
 ];

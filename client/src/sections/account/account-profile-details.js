@@ -14,19 +14,19 @@ import {
 const states = [
   {
     value: 'alabama',
-    label: 'Alabama'
+    label: 'Course1'
   },
   {
     value: 'new-york',
-    label: 'New York'
+    label: 'Course2'
   },
   {
     value: 'san-francisco',
-    label: 'San Francisco'
+    label: 'Course3'
   },
   {
     value: 'los-angeles',
-    label: 'Los Angeles'
+    label: 'Course4'
   }
 ];
 
@@ -65,7 +65,6 @@ export const AccountProfileDetails = () => {
     >
       <Card>
         <CardHeader
-          subheader="The information can be edited"
           title="Profile"
         />
         <CardContent sx={{ pt: 0 }}>
@@ -80,27 +79,15 @@ export const AccountProfileDetails = () => {
               >
                 <TextField
                   fullWidth
-                  helperText="Please specify the first name"
-                  label="First name"
+                  helperText="Please specify the full name"
+                  label="Full Name"
                   name="firstName"
                   onChange={handleChange}
                   required
                   value={values.firstName}
                 />
               </Grid>
-              <Grid
-                xs={12}
-                md={6}
-              >
-                <TextField
-                  fullWidth
-                  label="Last name"
-                  name="lastName"
-                  onChange={handleChange}
-                  required
-                  value={values.lastName}
-                />
-              </Grid>
+              
               <Grid
                 xs={12}
                 md={6}
@@ -133,7 +120,7 @@ export const AccountProfileDetails = () => {
               >
                 <TextField
                   fullWidth
-                  label="Country"
+                  label="Address"
                   name="country"
                   onChange={handleChange}
                   required
@@ -146,7 +133,7 @@ export const AccountProfileDetails = () => {
               >
                 <TextField
                   fullWidth
-                  label="Select State"
+                  label="Select Course"
                   name="state"
                   onChange={handleChange}
                   required
@@ -170,7 +157,7 @@ export const AccountProfileDetails = () => {
         <Divider />
         <CardActions sx={{ justifyContent: 'flex-end' }}>
           <Button variant="contained">
-            Save details
+            Save The Lead 
           </Button>
         </CardActions>
       </Card>

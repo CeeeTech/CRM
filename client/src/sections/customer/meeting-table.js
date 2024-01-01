@@ -56,10 +56,10 @@ export const CustomersTable = (props) => {
                   />
                 </TableCell>
                 <TableCell>
-                Course Name
+                student Name
                 </TableCell>
                 <TableCell>
-                  Email
+                counsellor Name
                 </TableCell>
                 <TableCell>
                   Location
@@ -68,7 +68,7 @@ export const CustomersTable = (props) => {
                   Phone
                 </TableCell>
                 <TableCell>
-                  number
+                  schedule to
                 </TableCell>
               </TableRow>
             </TableHead>

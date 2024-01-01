@@ -29,17 +29,20 @@ export const OverviewLatestOrders = (props) => {
 
   return (
     <Card sx={sx}>
-      <CardHeader title="Latest Orders" />
+      <CardHeader title="Latest Leads" />
       <Scrollbar sx={{ flexGrow: 1 }}>
         <Box sx={{ minWidth: 800 }}>
           <Table>
             <TableHead>
               <TableRow>
                 <TableCell>
-                  Order
+                  Student ID
                 </TableCell>
                 <TableCell>
-                  Customer
+                Student Name
+                </TableCell>
+                <TableCell>
+                  Phone Number
                 </TableCell>
                 <TableCell sortDirection="desc">
                   Date

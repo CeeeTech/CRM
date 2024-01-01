@@ -25,28 +25,31 @@ const Page = () => {
   const [method, setMethod] = useState('email');
   const formik = useFormik({
     initialValues: {
-      email: '',
-      password: '',
+      email: 'demo@devias.io',
+      password: 'Password123!',
+      submit: null
     },
     validationSchema: Yup.object({
-      email: Yup.string()
+      email: Yup
+        .string()
         .email('Must be a valid email')
         .max(255)
         .required('Email is required'),
-      password: Yup.string()
+      password: Yup
+        .string()
         .max(255)
-        .required('Password is required'),
+        .required('Password is required')
     }),
     onSubmit: async (values, helpers) => {
       try {
         await auth.signIn(values.email, values.password);
-        router.push('/'); 
+        router.push('/');
       } catch (err) {
         helpers.setStatus({ success: false });
         helpers.setErrors({ submit: err.message });
         helpers.setSubmitting(false);
       }
-    },
+    }
   });
 
   const handleMethodChange = useCallback(
@@ -56,13 +59,13 @@ const Page = () => {
     []
   );
 
-  // const handleSkip = useCallback(
-  //   () => {
-  //     auth.skip();
-  //     router.push('/');
-  //   },
-  //   [auth, router]
-  // );
+  const handleSkip = useCallback(
+    () => {
+      auth.skip();
+      router.push('/');
+    },
+    [auth, router]
+  );
 
   return (
     <>
@@ -180,7 +183,7 @@ const Page = () => {
                   fullWidth
                   size="large"
                   sx={{ mt: 3 }}
-                  // onClick={handleSkip}
+                  onClick={handleSkip}
                 >
                   Skip authentication
                 </Button>

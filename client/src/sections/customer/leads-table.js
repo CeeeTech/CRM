@@ -55,21 +55,27 @@ export const CustomersTable = (props) => {
                     }}
                   />
                 </TableCell>
+
                 <TableCell>
-                Course Name
+                Student Name
                 </TableCell>
+
                 <TableCell>
-                  Email
+                course
                 </TableCell>
+
                 <TableCell>
-                  Location
+                Phone
                 </TableCell>
+
                 <TableCell>
-                  Phone
+                  address
                 </TableCell>
+
                 <TableCell>
-                  number
+                counsellor name
                 </TableCell>
+              
               </TableRow>
             </TableHead>
             <TableBody>
@@ -109,9 +115,11 @@ export const CustomersTable = (props) => {
                         </Typography>
                       </Stack>
                     </TableCell>
+
                     <TableCell>
                       {customer.email}
                     </TableCell>
+                    
                     <TableCell>
                       {customer.address.city}, {customer.address.state}, {customer.address.country}
                     </TableCell>

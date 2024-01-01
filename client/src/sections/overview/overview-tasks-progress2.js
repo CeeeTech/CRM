@@ -1,8 +1,17 @@
 import PropTypes from 'prop-types';
-import CurrencyDollarIcon from '@heroicons/react/24/solid/CurrencyDollarIcon';
-import { Avatar, Card, CardContent, Stack, SvgIcon, Typography } from '@mui/material';
+import ListBulletIcon from '@heroicons/react/24/solid/ListBulletIcon';
+import {
+  Avatar,
+  Box,
+  Card,
+  CardContent,
+  LinearProgress,
+  Stack,
+  SvgIcon,
+  Typography
+} from '@mui/material';
 
-export const OverviewTotalProfit = (props) => {
+export const OverviewTasksProgress2 = (props) => {
   const { value, sx } = props;
 
   return (
@@ -17,9 +26,10 @@ export const OverviewTotalProfit = (props) => {
           <Stack spacing={1}>
             <Typography
               color="text.secondary"
+              gutterBottom
               variant="overline"
             >
-              Schedule Meetings
+              Registered
             </Typography>
             <Typography variant="h4">
               {value}
@@ -27,12 +37,15 @@ export const OverviewTotalProfit = (props) => {
           </Stack>
           
         </Stack>
+        <Box sx={{ mt: 3 }}>
+          
+        </Box>
       </CardContent>
     </Card>
   );
 };
 
-OverviewTotalProfit.propTypes = {
-  value: PropTypes.string,
+OverviewTasksProgress2.propTypes = {
+  value: PropTypes.number.isRequired,
   sx: PropTypes.object
 };

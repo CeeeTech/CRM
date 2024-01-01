@@ -7,8 +7,15 @@ import { OverviewLatestOrders } from 'src/sections/overview/overview-latest-orde
 import { OverviewLatestProducts } from 'src/sections/overview/overview-latest-products';
 import { OverviewSales } from 'src/sections/overview/overview-sales';
 import { OverviewTasksProgress } from 'src/sections/overview/overview-tasks-progress';
+import { OverviewTasksProgress1 } from 'src/sections/overview/overview-tasks-progress1';
+import { OverviewTasksProgress2 } from 'src/sections/overview/overview-tasks-progress2';
+import { OverviewTasksProgress3 } from 'src/sections/overview/overview-tasks-progress3';
+import { OverviewTasksProgress4 } from 'src/sections/overview/overview-tasks-progress4';
+import { OverviewTasksProgress5 } from 'src/sections/overview/overview-tasks-progress5';
+import { OverviewTasksProgress6 } from 'src/sections/overview/overview-tasks-progress6';
 import { OverviewTotalCustomers } from 'src/sections/overview/overview-total-customers';
 import { OverviewTotalProfit } from 'src/sections/overview/overview-total-profit';
+import { OverviewTotalProfit1 } from 'src/sections/overview/overview-total-profit1';
 import { OverviewTraffic } from 'src/sections/overview/overview-traffic';
 
 const now = new Date();
@@ -41,7 +48,7 @@ const Page = () => (
               difference={12}
               positive
               sx={{ height: '100%' }}
-              value="$24k"
+              value="28"
             />
           </Grid>
           <Grid
@@ -53,7 +60,7 @@ const Page = () => (
               difference={16}
               positive={false}
               sx={{ height: '100%' }}
-              value="1.6k"
+              value="52"
             />
           </Grid>
           <Grid
@@ -63,7 +70,7 @@ const Page = () => (
           >
             <OverviewTasksProgress
               sx={{ height: '100%' }}
-              value={75.5}
+              value= "75"
             />
           </Grid>
           <Grid
@@ -73,13 +80,83 @@ const Page = () => (
           >
             <OverviewTotalProfit
               sx={{ height: '100%' }}
-              value="$15k"
+              value="15"
             />
           </Grid>
           <Grid
             xs={12}
             lg={8}
           >
+            <Grid
+            xs={12}
+            sm={6}
+            lg={3}
+          >
+            <OverviewTotalProfit1
+              sx={{ height: '100%', width: '35%' }}
+              value="18"
+            />
+          </Grid>
+            <Grid
+            xs={12}
+            sm={6}
+            lg={3}
+          >
+            <OverviewTasksProgress1
+              sx={{ height: '100%', width: '35%' }}
+              value= "82"
+            />
+          </Grid>
+          <Grid
+            xs={12}
+            sm={6}
+            lg={3}
+          >
+            <OverviewTasksProgress2
+              sx={{ height: '100%', width: '35%' }}
+              value= "96"
+            />
+          </Grid>
+          <Grid
+            xs={12}
+            sm={6}
+            lg={3}
+          >
+            <OverviewTasksProgress3
+              sx={{ height: '100%', width: '35%' }}
+              value= "2"
+            />
+          </Grid>
+          <Grid
+            xs={12}
+            sm={6}
+            lg={3}
+          >
+            <OverviewTasksProgress4
+              sx={{ height: '100%', width: '35%' }}
+              value= "5"
+            />
+          </Grid>
+          <Grid
+            xs={12}
+            sm={6}
+            lg={3}
+          >
+            <OverviewTasksProgress4
+              sx={{ height: '100%', width: '35%' }}
+              value= "1"
+            />
+          </Grid>
+          <Grid
+            xs={12}
+            sm={6}
+            lg={3}
+          >
+            <OverviewTasksProgress4
+              sx={{ height: '100%', width: '35%' }}
+              value= "6"
+            />
+          </Grid>
             <OverviewSales
               chartSeries={[
                 {

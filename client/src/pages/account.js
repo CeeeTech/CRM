@@ -8,7 +8,7 @@ const Page = () => (
   <>
     <Head>
       <title>
-        Account | Devias Kit
+        Profile | Devias Kit
       </title>
     </Head>
     <Box
@@ -22,7 +22,7 @@ const Page = () => (
         <Stack spacing={3}>
           <div>
             <Typography variant="h4">
-              Account
+              Profile
             </Typography>
           </div>
           <div>
@@ -33,14 +33,14 @@ const Page = () => (
               <Grid
                 xs={12}
                 md={6}
-                lg={4}
+                lg={5}
               >
                 <AccountProfile />
               </Grid>
               <Grid
                 xs={12}
                 md={6}
-                lg={8}
+                lg={15}
               >
                 <AccountProfileDetails />
               </Grid>

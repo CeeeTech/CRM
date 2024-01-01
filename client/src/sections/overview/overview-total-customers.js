@@ -21,23 +21,13 @@ export const OverviewTotalCustomers = (props) => {
               color="text.secondary"
               variant="overline"
             >
-              Total Customers
+              Send Emails
             </Typography>
             <Typography variant="h4">
               {value}
             </Typography>
           </Stack>
-          <Avatar
-            sx={{
-              backgroundColor: 'success.main',
-              height: 56,
-              width: 56
-            }}
-          >
-            <SvgIcon>
-              <UsersIcon />
-            </SvgIcon>
-          </Avatar>
+          
         </Stack>
         {difference && (
           <Stack
@@ -51,25 +41,10 @@ export const OverviewTotalCustomers = (props) => {
               direction="row"
               spacing={0.5}
             >
-              <SvgIcon
-                color={positive ? 'success' : 'error'}
-                fontSize="small"
-              >
-                {positive ? <ArrowUpIcon /> : <ArrowDownIcon />}
-              </SvgIcon>
-              <Typography
-                color={positive ? 'success.main' : 'error.main'}
-                variant="body2"
-              >
-                {difference}%
-              </Typography>
+              
+              
             </Stack>
-            <Typography
-              color="text.secondary"
-              variant="caption"
-            >
-              Since last month
-            </Typography>
+            
           </Stack>
         )}
       </CardContent>
