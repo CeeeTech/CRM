@@ -71,7 +71,7 @@ const Page = () => {
     <>
       <Head>
         <title>
-         Login
+         Add Users
         </title>
       </Head>
       <Box
@@ -97,23 +97,22 @@ const Page = () => {
               sx={{ mb: 3 }}
             >
               <Typography variant="h4">
-                Login
+                Add new course
               </Typography>
-              <Typography
+              {/* <Typography
                 color="text.secondary"
                 variant="body2"
               >
-                {/* Don&apos;t have an account?
-                &nbsp; */}
+              Update Users?  
                 <Link
                   component={NextLink}
-                  href="/auth/register"
+                  href="/auth/updateuser"
                   underline="hover"
                   variant="subtitle2"
                 >
-                  Register
+                  Click here
                 </Link>
-              </Typography>
+              </Typography> */}
             </Stack>
             <Tabs
               onChange={handleMethodChange}
@@ -124,10 +123,6 @@ const Page = () => {
                 label="Email"
                 value="email"
               />
-              <Tab
-                label="Phone Number"
-                value="phoneNumber"
-              />
             </Tabs>
             {method === 'email' && (
               <form
@@ -136,31 +131,26 @@ const Page = () => {
               >
                 <Stack spacing={3}>
                   <TextField
-                    error={!!(formik.touched.email && formik.errors.email)}
+                    error={!!(formik.touched.coursename && formik.errors.coursename)}
                     fullWidth
-                    helperText={formik.touched.email && formik.errors.email}
-                    label="Email Address"
-                    name="email"
-                    onBlur={formik.handleBlur}
+                    helperText={formik.touched.coursename && formik.errors.coursename}
+                    label="Course Name"
+                    name="course name"
                     onChange={formik.handleChange}
-                    type="email"
-                    value={formik.values.email}
+                    required
+                    value={formik.values.coursename}
                   />
                   <TextField
-                    error={!!(formik.touched.password && formik.errors.password)}
+                    error={!!(formik.touched.description && formik.errors.description)}
                     fullWidth
-                    helperText={formik.touched.password && formik.errors.password}
-                    label="Password"
-                    name="password"
+                    helperText={formik.touched.description && formik.errors.description}
+                    label="Course Description"
+                    name="description"
                     onBlur={formik.handleBlur}
                     onChange={formik.handleChange}
-                    type="password"
-                    value={formik.values.password}
+                    value={formik.values.description}
                   />
                 </Stack>
-                <FormHelperText sx={{ mt: 1 }}>
-                  Optionally you can skip.
-                </FormHelperText>
                 {formik.errors.submit && (
                   <Typography
                     color="error"
@@ -177,39 +167,9 @@ const Page = () => {
                   type="submit"
                   variant="contained"
                 >
-                  Login
+                  Save Course details
                 </Button>
-                <Button
-                  fullWidth
-                  size="large"
-                  sx={{ mt: 3 }}
-                  onClick={handleSkip}
-                >
-                  Skip authentication
-                </Button>
-                <Alert
-                  color="primary"
-                  severity="info"
-                  sx={{ mt: 3 }}
-                >
-                  <div>
-                    You can use <b>demo@devias.io</b> and password <b>Password123!</b>
-                  </div>
-                </Alert>
               </form>
-            )}
-            {method === 'phoneNumber' && (
-              <div>
-                <Typography
-                  sx={{ mb: 1 }}
-                  variant="h6"
-                >
-                  Not available in the demo
-                </Typography>
-                <Typography color="text.secondary">
-                  To prevent unnecessary costs we disabled this feature in the demo.
-                </Typography>
-              </div>
             )}
           </div>
         </Box>

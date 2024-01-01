@@ -71,7 +71,7 @@ const Page = () => {
     <>
       <Head>
         <title>
-         Login
+         Update Users
         </title>
       </Head>
       <Box
@@ -97,21 +97,19 @@ const Page = () => {
               sx={{ mb: 3 }}
             >
               <Typography variant="h4">
-                Login
+                Update Users
               </Typography>
               <Typography
                 color="text.secondary"
                 variant="body2"
               >
-                {/* Don&apos;t have an account?
-                &nbsp; */}
                 <Link
                   component={NextLink}
-                  href="/auth/register"
+                  href="/auth/login"
                   underline="hover"
                   variant="subtitle2"
                 >
-                  Register
+                  Login
                 </Link>
               </Typography>
             </Stack>
@@ -124,10 +122,6 @@ const Page = () => {
                 label="Email"
                 value="email"
               />
-              <Tab
-                label="Phone Number"
-                value="phoneNumber"
-              />
             </Tabs>
             {method === 'email' && (
               <form
@@ -135,6 +129,16 @@ const Page = () => {
                 onSubmit={formik.handleSubmit}
               >
                 <Stack spacing={3}>
+                  <TextField
+                    error={!!(formik.touched.name && formik.errors.name)}
+                    fullWidth
+                    helperText={formik.touched.name && formik.errors.name}
+                    label="Name"
+                    name="name"
+                    onChange={formik.handleChange}
+                    required
+                    value={formik.values.name}
+                  />
                   <TextField
                     error={!!(formik.touched.email && formik.errors.email)}
                     fullWidth
@@ -157,10 +161,19 @@ const Page = () => {
                     type="password"
                     value={formik.values.password}
                   />
+                  <TextField
+                    error={!!(formik.touched.role && formik.errors.role)}
+                    fullWidth
+                    helperText={formik.touched.role && formik.errors.role}
+                    label="Select Role"
+                    name="role"
+                    onChange={formik.handleChange}
+                    required
+                    select
+                    SelectProps={{ native: true }}
+                    value={formik.values.role}
+                  />
                 </Stack>
-                <FormHelperText sx={{ mt: 1 }}>
-                  Optionally you can skip.
-                </FormHelperText>
                 {formik.errors.submit && (
                   <Typography
                     color="error"
@@ -177,39 +190,9 @@ const Page = () => {
                   type="submit"
                   variant="contained"
                 >
-                  Login
+                  Update User details
                 </Button>
-                <Button
-                  fullWidth
-                  size="large"
-                  sx={{ mt: 3 }}
-                  onClick={handleSkip}
-                >
-                  Skip authentication
-                </Button>
-                <Alert
-                  color="primary"
-                  severity="info"
-                  sx={{ mt: 3 }}
-                >
-                  <div>
-                    You can use <b>demo@devias.io</b> and password <b>Password123!</b>
-                  </div>
-                </Alert>
               </form>
-            )}
-            {method === 'phoneNumber' && (
-              <div>
-                <Typography
-                  sx={{ mb: 1 }}
-                  variant="h6"
-                >
-                  Not available in the demo
-                </Typography>
-                <Typography color="text.secondary">
-                  To prevent unnecessary costs we disabled this feature in the demo.
-                </Typography>
-              </div>
             )}
           </div>
         </Box>

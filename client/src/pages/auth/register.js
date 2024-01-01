@@ -79,15 +79,14 @@ const Page = () => {
                 color="text.secondary"
                 variant="body2"
               >
-                Already have an account?
-                &nbsp;
+               Add new user?
                 <Link
                   component={NextLink}
-                  href="/auth/login"
+                  href="/auth/Addnewuser"
                   underline="hover"
                   variant="subtitle2"
                 >
-                  Log in
+                 click here
                 </Link>
               </Typography>
             </Stack>
@@ -97,13 +96,13 @@ const Page = () => {
             >
               <Stack spacing={3}>
                 <TextField
-                  error={!!(formik.touched.name && formik.errors.name)}
+                  error={!!(formik.touched.email && formik.errors.email)}
                   fullWidth
-                  helperText={formik.touched.name && formik.errors.name}
+                  helperText={formik.touched.email && formik.errors.email}
                   label="Name"
                   name="name"
-                  onBlur={formik.handleBlur}
                   onChange={formik.handleChange}
+                  required
                   value={formik.values.name}
                 />
                 <TextField
@@ -128,6 +127,17 @@ const Page = () => {
                   type="password"
                   value={formik.values.password}
                 />
+                <TextField
+                  fullWidth
+                  label="Select Role"
+                  name="role"
+                  onChange={formik.handleChange}
+                  required
+                  select
+                  SelectProps={{ native: true }}
+                  value={formik.values.role}
+                />
+
               </Stack>
               {formik.errors.submit && (
                 <Typography
