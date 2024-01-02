@@ -2,7 +2,10 @@ const mongoose = require("mongoose");
 
 const studentSchema = new mongoose.Schema({
   name: String,
-  age: Number,
+  dob: Date,
+  contact_no: String,
+  email: String,
+  address: String
   // Add other fields as needed
 });
 

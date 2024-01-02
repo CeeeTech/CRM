@@ -3,9 +3,14 @@ const express = require("express");
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const connectToDatabase = require("../database");
-const studentRoutes = require("./routes/studentRoutes"); 
+const studentRoutes = require("./routes/studentRoutes");
 const user_typeRoutes = require("./routes/user_typeRoutes");
 const userRoutes = require("./routes/userRoutes");
+const leadRoutes = require('./routes/leadRoutes')
+const branchRoutes = require('./routes/branchRoutes')
+const courseRoutes = require('./routes/courseRoutes')
+const statusRoutes = require('./routes/statusRoutes')
+const folowUpRoutes = require('./routes/folowUpRoutes')
 
 const app = express();
 app.use(cors());
@@ -26,9 +31,14 @@ app.get("/", (req, res) => {
 });
 
 // Use the student routes
-app.use("/api", studentRoutes);
 app.use("/api", user_typeRoutes);
+app.use("/api", studentRoutes);
 app.use("/api", userRoutes);
+app.use("/api", leadRoutes);
+app.use('/api', branchRoutes);
+app.use('/api', courseRoutes)
+app.use('/api', statusRoutes)
+app.use('/api', folowUpRoutes)
 
 // Create an HTTP server and listen on the specified port
 const server = http.createServer(app);
