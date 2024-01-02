@@ -4,14 +4,16 @@ import { subDays, subHours } from 'date-fns';
 import ArrowDownOnSquareIcon from '@heroicons/react/24/solid/ArrowDownOnSquareIcon';
 import ArrowUpOnSquareIcon from '@heroicons/react/24/solid/ArrowUpOnSquareIcon';
 import PlusIcon from '@heroicons/react/24/solid/PlusIcon';
-import { Box, Button, Container, Stack, SvgIcon, Typography } from '@mui/material';
+import { Box, Button, Container, Link, Stack, SvgIcon, Typography } from '@mui/material';
 import { useSelection } from 'src/hooks/use-selection';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
-import { LeadsTable } from 'src/sections/leads/lead-table';
-import { LeadsSearch } from 'src/sections/leads/lead-search';
+import { LeadsTable } from 'src/sections/account/lead-table';
+import { LeadsSearch } from 'src/sections/account/lead-search';
 import { applyPagination } from 'src/utils/apply-pagination';
 import { useEffect } from 'react';
-import Form from 'src/sections/leads/leadForm';
+import Form from 'src/sections/account/leadForm';
+// import AddNewLead from '../pages/leads/addNewLead';
+import { useRouter } from 'next/router';
 
 const now = new Date();
 
@@ -47,7 +49,7 @@ const Page = () => {
   const leadsSelection = useSelection(leadsIds);
   const [selectedLeadId, setSelectedLeadId] = useState(null);
   const [showUpdateForm, setShowUpdateForm] = useState(false);
-
+  const router = useRouter();
 
   const handlePageChange = useCallback(
     (event, value) => {
@@ -64,13 +66,20 @@ const Page = () => {
   );
 
   const handleRowClick = useCallback(
-    (id) => {
+    async (id, event) => {
+      if (event) {
+        event.preventDefault();
+      }
+  
       console.log('Row clicked. Lead ID:', id);
       setSelectedLeadId(id);
-      setShowUpdateForm(true);
-
+  
+      if (router) {
+        await router.push(`/leads/lead-form?leadId=${id}`);
+        // setShowUpdateForm(true);
+      }
     },
-    [setSelectedLeadId, setShowUpdateForm]
+    [setSelectedLeadId, router]
   );
 
   const handleSelectOne = useCallback(
@@ -108,7 +117,7 @@ const Page = () => {
       try {
         const response = await fetch('http://localhost:8080/api/leads');
         const leadData = await response.json();
-        console.log(leadData);
+        // console.log(leadData);
 
         const fetchAdditionalInfo = async (lead) => {
           const studentResponse = await fetch(`http://localhost:8080/api/students/${lead.student_id}`);
@@ -158,7 +167,7 @@ const Page = () => {
     };
 
     fetchLeads();
-    
+
   }, [setData, page, rowsPerPage]);
 
   // Separate useEffect for handling selectedLeadId changes
@@ -170,11 +179,11 @@ const Page = () => {
 
   return (
     <>
-      {showUpdateForm && selectedLead ? (
+      {/* {selectedLead ? (
         <Form
           lead={selectedLead} selectedLeadId={selectedLeadId}
         />
-      ) : (
+      ) : ( */}
         <>
           <Head>
             <title>
@@ -227,16 +236,20 @@ const Page = () => {
                     </Stack>
                   </Stack>
                   <div>
-                    <Button
-                      startIcon={(
-                        <SvgIcon fontSize="small">
-                          <PlusIcon />
-                        </SvgIcon>
-                      )}
-                      variant="contained"
-                    >
-                      Add
-                    </Button>
+
+                    <Link href="/leads/addLead" >
+                      <Button
+                        startIcon={(
+                          <SvgIcon fontSize="small">
+                            <PlusIcon />
+                          </SvgIcon>
+                        )}
+                        variant="contained"
+                      >
+                        Add
+                      </Button>
+                    </Link>
+
                   </div>
                 </Stack>
                 <LeadsSearch />
@@ -245,7 +258,7 @@ const Page = () => {
                   items={leads}
                   onPageChange={handlePageChange}
                   onRowsPerPageChange={handleRowsPerPageChange}
-                  onRowClick={handleRowClick}
+                  onRowClick={(id, event) => handleRowClick(id, event)}
                   onDeselectAll={handleDeselectAll}
                   onDeselectOne={handleDeselectOne}
                   onSelectAll={handleSelectAll}
@@ -259,7 +272,8 @@ const Page = () => {
               </Stack>
             </Container>
           </Box></>
-      )}
+       {/* )
+      } */}
 
     </>
   );
