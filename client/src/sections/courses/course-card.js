@@ -38,13 +38,14 @@ export const CourseCard = (props) => {
         sx={{ p: 2 }}
       >
         <Stack alignItems="center" direction="row" spacing={1}>
-          <Button variant="contained" href="/auth/add-new-course">
-            Disable
+          <Button variant="contained" href="/courses/course-form">
+            {courses.status ? "Disable" : "Enable"}
           </Button>
         </Stack>
         <Stack alignItems="center" direction="row" spacing={1}>
           <Button
-            href="/auth/add-new-course"
+            // navigate to course form page with course id
+            href={`/courses/course-form/${courses._id}`}
             color="inherit"
             startIcon={
               <SvgIcon fontSize="small">
@@ -61,4 +62,3 @@ export const CourseCard = (props) => {
 CourseCard.propTypes = {
   courses: PropTypes.object.isRequired,
 };
-

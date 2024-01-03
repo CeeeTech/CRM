@@ -31,8 +31,6 @@ const Page = () => {
       const data = await res.json();
 
       console.log(data);
-
-      // Assuming data is an array, set it directly
       setCourses(data);
     } catch (error) {
       console.log("Error fetching courses:", error);
@@ -87,7 +85,7 @@ const Page = () => {
                     </SvgIcon>
                   }
                   variant="contained"
-                  href="/auth/add-new-course"
+                  href="/courses/course-form"
                 >
                   Add Cource
                 </Button>
