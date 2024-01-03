@@ -106,6 +106,8 @@ export const LeadDetails = ({ selectedLeadId }) => {
                     followupId: followUpData[0]._id
                   })
 
+                  console.log(formatDate(followUpData[0].date))
+
                 }
 
               }
@@ -247,7 +249,8 @@ export const LeadDetails = ({ selectedLeadId }) => {
                 "lead_id": lead_id,
                 "user": 'Hana Amaily',
                 "status": values.status,
-                "comment": values.comment
+                "comment": values.comment,
+                "date": values.updateDate
               }
             )
           });
@@ -259,41 +262,54 @@ export const LeadDetails = ({ selectedLeadId }) => {
         } else {
           //update code
           console.log("update code");
+          const updateFollowupData = {
+            user:'John Doe',
+            date: values.updateDate,
+            lead_id: selectedLeadId
+          };
           console.log(values.followupId);
           const selectedStatusId = statuses.find((option) => option.name === values.status)?._id;
-          const updateFollowup = await fetch(`http://localhost:8080/api/followUps/${values.followupId}`, {
-            method: 'PATCH',
+          if (values.comment != "") {
+            updateFollowupData.comment = values.comment;
+          }
+          if (selectedStatusId != "") {
+            updateFollowupData.status = values.status;
+          }
+
+          const addFollowup = await fetch(`http://localhost:8080/api/followUps`, {
+            method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              "status_id": selectedStatusId,
-              "comment": values.comment,
-              "user_id": '657c313de6434e7419e70bec',
-              date: values.updateDate
-            })
+            body: JSON.stringify(updateFollowupData)
           })
-          if (!updateFollowup.ok) {
+
+          if (!addFollowup.ok) {
             console.log("update followup")
-            console.error("Error upFdating followup data", updateFollowup.statusText);
+            console.error("Error adding followup data", addFollowup.statusText);
             return
           }
-          console.log(selectedBranchId)
-          console.log(selectedCourseId)
+          
+          const updateLeadData = {
+            sheduled_to: values.scheduled_to,
+          };
+
+          if (selectedCourseId != "") {
+            updateLeadData.course_id = selectedCourseId;
+          }
+          if (selectedBranchId != "") {
+            updateLeadData.branch_id = selectedBranchId;
+          }
+
           const updateLead = await fetch(`http://localhost:8080/api/leads/${selectedLeadId}`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              // "date": values.date,
-              "sheduled_to": values.scheduled_to,
-              "course_id": selectedCourseId,
-              "branch_id": selectedBranchId,
-            })
+            body: JSON.stringify(updateLeadData)
           })
           if (!updateLead.ok) {
             console.error("Error updating lead data", updateLead.statusText);
             return
           }
 
-          console.log(selectedCourseId, selectedBranchId);
+          // console.log(selectedCourseId, selectedBranchId);
           console.log('Data updated successfully!');
         }
         setValues({

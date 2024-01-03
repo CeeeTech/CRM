@@ -37,6 +37,8 @@ export const StatusDetails = ({ selectedLeadId }) => {
         }
     ]);
 
+    const [check, setCheck] = useState(false);
+
     function formatDate(inputDate) {
         const date = new Date(inputDate);
         const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -47,85 +49,97 @@ export const StatusDetails = ({ selectedLeadId }) => {
     }
 
     useEffect(() => {
+        console.log("leadid", selectedLeadId);
+        console.log("followup lead id", selectedLeadId);
         const fetchFollowUpHistory = async () => {
             try {
                 const response = await fetch(`http://localhost:8080/api/followups/by-lead/${selectedLeadId}`);
                 if (response.ok) {
-                    const followUp = await response.json();
+                    const followUpArray = await response.json();
 
-                    const fetchAdditionalInfo = async (followUp) => {
-                        const userResponse = await fetch(`http://localhost:8080/api/users/${followUp[0].user_id}`);
-                        const usertData = await userResponse.json();
+                    const additionalInfo = await Promise.all(
+                        followUpArray.map(async (followUp) => {
+                            const userResponse = await fetch(`http://localhost:8080/api/users/${followUp.user_id}`);
+                            const usertData = await userResponse.json();
 
-                        const statusResponse = await fetch(`http://localhost:8080/api/status/${followUp[0].status_id}`);
-                        const statusData = await statusResponse.json();
+                            const statusResponse = await fetch(`http://localhost:8080/api/status/${followUp.status_id}`);
+                            const statusData = await statusResponse.json();
 
-                        return {
-                            user_name: usertData.name,
-                            status: statusData.name,
-                            comment: followUp.comment,
-                            date: formatDate(followUp.date),
-                        };
-                    };
-
-                    // Fetch additional information for all leads concurrently
-                    const additionalInfoPromises = followUp.map(fetchAdditionalInfo);
-                    const additionalInfo = await Promise.all(additionalInfoPromises);
+                            return {
+                                user_name: usertData.name,
+                                status: statusData.name,
+                                comment: followUp.comment,
+                                date: formatDate(followUp.date),
+                            };
+                        })
+                    );
 
                     setData(additionalInfo);
-
+                    console.log("fetched followup data")
+                    setCheck(true);
                 } else {
                     console.error('Error fetching followup:', response.statusText);
                 }
             } catch (error) {
                 console.error('Error fetching followup:', error.message);
             }
+        };
+
+        const fetchData = async () => {
+            await fetchFollowUpHistory();
+        };
+
+        if (selectedLeadId != null) {
+            fetchData();
+            console.log("fetched followup data")
         }
-        fetchFollowUpHistory();
-    }, [])
+    }, [selectedLeadId])
 
+    // if (check == true) {
 
+        return (
+            <Card>
+                <CardContent>
+                    <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+                        {data.map((item, index) => (
+                            <React.Fragment key={index}>
+                                <ListItem alignItems="flex-start">
+                                    <ListItemText
+                                        primary={item.user_name}
+                                        secondary={
+                                            <React.Fragment>
+                                                <Typography
+                                                    sx={{ display: 'inline' }}
+                                                    component="span"
+                                                    variant="body2"
+                                                    color="text.primary"
+                                                >
+                                                    {item.status}
+                                                </Typography>
+                                                {" - "}{item.date}
+                                                <br />
+                                                <Typography
+                                                    sx={{ display: 'inline' }}
+                                                    component="span"
+                                                    variant="body2"
+                                                    color="text.gr"
+                                                >
+                                                    {item.comment}
+                                                </Typography>
+                                            </React.Fragment>
+                                        }
+                                    />
+                                </ListItem>
+                                {index < data.length - 1 && <Divider variant="middle" component="li" />}
+                            </React.Fragment>
+                        ))}
+                    </List>
+                </CardContent>
+            </Card>
 
+        )
+    // } else {
+        // return null;
+    // }
 
-
-    return (
-        <Card>
-            <CardContent>
-                <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-                    {data.map((item, index) => (
-                        <React.Fragment key={index}>
-                            <ListItem alignItems="flex-start">
-                                <ListItemText
-                                    primary={item.user_name}
-                                    secondary={
-                                        <React.Fragment>
-                                            <Typography
-                                                sx={{ display: 'inline' }}
-                                                component="span"
-                                                variant="body2"
-                                                color="text.primary"
-                                            >
-                                                {item.status}
-                                            </Typography>
-                                            {" - "}{item.date}
-                                            <br />
-                                            <Typography
-                                                sx={{ display: 'inline' }}
-                                                component="span"
-                                                variant="body2"
-                                                color="text.gr"
-                                            >
-                                                {item.comment}
-                                            </Typography>
-                                        </React.Fragment>
-                                    }
-                                />
-                            </ListItem>
-                            {index < data.length - 1 && <Divider variant="middle" component="li" />}
-                        </React.Fragment>
-                    ))}
-                </List>
-            </CardContent>
-        </Card>
-    );
 };

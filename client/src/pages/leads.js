@@ -237,7 +237,7 @@ const Page = () => {
                   </Stack>
                   <div>
 
-                    <Link href="/leads/addLead" >
+                    <Link href="/leads/lead-form" >
                       <Button
                         startIcon={(
                           <SvgIcon fontSize="small">
