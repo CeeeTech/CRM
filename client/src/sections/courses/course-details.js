@@ -16,21 +16,46 @@ import {
 export const CourseDetails = ({ selectedCourseId }) => {
   const router = useRouter();
 
-  useEffect(() => {
-    // Fetch existing course details if selectedCourseId is provided
-    if (selectedCourseId) {
-      // Fetch course details based on selectedCourseId and update the form values
-      // You need to implement the logic to fetch and set the values
-      // Example: fetchCourseDetails(selectedCourseId).then(data => setValues(data));
-    }
-  }, [selectedCourseId]);
-
-  // initialize values
+  // initialize values and title
   const [values, setValues] = useState({
     name: "",
     description: "",
-    course: "",
   });
+  const [formTitle, setFormTitle] = useState("Add New Course");
+
+  useEffect(() => {
+    console.log("selectedCourseId:", selectedCourseId);
+    // Fetch existing course details if selectedCourseId is provided
+    if (selectedCourseId) {
+      // Fetch course details based on selectedCourseId and update the form values
+      fetchCourseDetails(selectedCourseId);
+      setFormTitle("Update Course");
+    } else {
+      // Reset form values if selectedCourseId is not provided
+      setValues({
+        name: "",
+        description: "",
+      });
+      setFormTitle("Add New Course");
+    }
+  }, [selectedCourseId]);
+
+  // fetch selected course details function
+  const fetchCourseDetails = async (id) => {
+    try {
+      const res = await fetch(`http://localhost:8080/api/courses/${id}`);
+
+      if (!res.ok) {
+        throw new Error(`HTTP error! Status: ${res.status}`);
+      }
+
+      const data = await res.json();
+      console.log(data);
+      setValues(data);
+    } catch (error) {
+      console.log("Error fetching course details:", error);
+    }
+  };
 
   // handle change function
   const handleChange = (event) => {
@@ -45,13 +70,13 @@ export const CourseDetails = ({ selectedCourseId }) => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      // Use different API endpoints for add and update based on selectedLeadId
-      const apiUrl = selectedLeadId
-        ? `http://localhost:8080/api/course-form-update/${selectedLeadId}`
+      // Use different API endpoints for add and update based on selectedCourseId
+      const apiUrl = selectedCourseId
+        ? `http://localhost:8080/api/course-form-update/${selectedCourseId}`
         : "http://localhost:8080/api/course-form-add-new";
 
       const res = await fetch(apiUrl, {
-        method: selectedLeadId ? "PUT" : "POST",
+        method: selectedCourseId ? "PUT" : "POST",
         body: JSON.stringify(values),
         headers: {
           "Content-type": "application/json",
@@ -69,10 +94,9 @@ export const CourseDetails = ({ selectedCourseId }) => {
       setValues({
         name: "",
         description: "",
-        course: "",
       });
 
-      // Redirect to the courses page
+      // Navigate to courses page after successful submission
       router.push("/courses");
     } catch (error) {
       console.log("Error:", error);
@@ -82,7 +106,7 @@ export const CourseDetails = ({ selectedCourseId }) => {
   return (
     <form autoComplete="off" noValidate onSubmit={handleSubmit}>
       <Card>
-        <CardHeader title={selectedLeadId ? "Update Course" : "Add New Course"} />
+        <CardHeader title={formTitle} />
         <CardContent sx={{ pt: 0 }}>
           <Box sx={{ m: -1.5 }}>
             <Grid container spacing={4}>
@@ -113,7 +137,7 @@ export const CourseDetails = ({ selectedCourseId }) => {
         <Divider />
         <CardActions sx={{ justifyContent: "flex-end" }}>
           <Button variant="contained" type="submit">
-            {selectedLeadId ? "Update Course" : "Add Course"}
+            {selectedCourseId ? "Update Course" : "Add Course"}
           </Button>
         </CardActions>
       </Card>

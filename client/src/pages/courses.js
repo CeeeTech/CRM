@@ -3,6 +3,7 @@ import ArrowUpOnSquareIcon from "@heroicons/react/24/solid/ArrowUpOnSquareIcon";
 import ArrowDownOnSquareIcon from "@heroicons/react/24/solid/ArrowDownOnSquareIcon";
 import PlusIcon from "@heroicons/react/24/solid/PlusIcon";
 import { useEffect, useState } from "react";
+import { useRouter } from 'next/router';
 import {
   Box,
   Button,
@@ -19,6 +20,7 @@ import { CourseSearch } from "src/sections/courses/course-search";
 
 const Page = () => {
   const [courses, setCourses] = useState([]);
+  const router = useRouter();
 
   useEffect(() => {
     getCourses();
@@ -36,6 +38,11 @@ const Page = () => {
       console.log("Error fetching courses:", error);
     }
   }
+
+  // handle add course function
+  const handleAddCourse = () => {
+    router.push(`/courses/course-form`);
+  };
 
   return (
     <>
@@ -85,7 +92,7 @@ const Page = () => {
                     </SvgIcon>
                   }
                   variant="contained"
-                  href="/courses/course-form"
+                  onClick={handleAddCourse}
                 >
                   Add Cource
                 </Button>

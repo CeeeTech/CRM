@@ -7,7 +7,7 @@ import { useRouter } from 'next/router';
 const Page = () => {
 
   const router = useRouter();
-  const { leadId } = router.query;
+  const { courseId } = router.query;
 
   return (
     <>
@@ -24,12 +24,12 @@ const Page = () => {
         <Container maxWidth="lg">
           <Stack spacing={3}>
             <div>
-              <Typography variant="h4">Lead Form</Typography>
+              <Typography variant="h4">Course Form</Typography>
             </div>
             <div>
               <Grid container spacing={3}>
                 <Grid xs={12} md={6} lg={15}>
-                  <CourseDetails selectedLeadId={leadId} />
+                  <CourseDetails selectedCourseId={courseId} />
                 </Grid>
               </Grid>
             </div>
