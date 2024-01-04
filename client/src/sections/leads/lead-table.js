@@ -12,10 +12,12 @@ import {
   TableHead,
   TablePagination,
   TableRow,
-  Typography
+  Typography,
+  Listbox
 } from '@mui/material';
 import { Scrollbar } from 'src/components/scrollbar';
 import { getInitials } from 'src/utils/get-initials';
+import Dropdown from './dropdown'
 
 export const LeadsTable = (props) => {
   const {
@@ -33,8 +35,10 @@ export const LeadsTable = (props) => {
     selected = []
   } = props;
 
+
+
   const selectedSome = (selected.length > 0) && (selected.length < items.length);
-  const selectedAll = (items.length > 0) && (selected.length === items.length);
+  const selectedAll = (items.length > 0) && (selected.leangth === items.length);
 
   return (
     <Card>
@@ -70,6 +74,9 @@ export const LeadsTable = (props) => {
                 </TableCell>
                 <TableCell>
                   Branch
+                </TableCell>
+                <TableCell>
+                  Assign To
                 </TableCell>
               </TableRow>
             </TableHead>
@@ -122,6 +129,9 @@ export const LeadsTable = (props) => {
                     </TableCell>
                     <TableCell>
                       {lead.branch}
+                    </TableCell>
+                    <TableCell>
+                    <Dropdown selectedLead={lead.id} lead={lead}/>
                     </TableCell>
                   </TableRow>
                 );

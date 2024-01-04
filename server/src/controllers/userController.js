@@ -171,10 +171,33 @@ async function updateUserById(req, res) {
   }
 }
 
+//get users by user type
+async function getUsersByUserType(req, res) {
+  const { user_type } = req.params;
+
+  const user_type_document = await User_type.find({ name: user_type.toLowerCase() });
+
+  if (!user_type_document) {
+    res.status(400).json({ error: `user_type not found: ${user_type}` })
+  }
+
+  if (user_type_document[0]._id != null) {
+    try {
+      const users = await User.find({ user_type: user_type_document[0]._id });
+      res.status(200).json(users);
+    } catch (error) {
+      console.error("Error fetching users by user_type", error);
+      res.status(500).json({ error: "Internal Server Error", message: "Error fetching users by user_type" });
+    }
+  }
+
+}
+
 module.exports = {
   getUsers,
   createUser,
   login,
   getUserById,
   updateUserById,
+  getUsersByUserType
 };
