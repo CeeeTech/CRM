@@ -3,10 +3,9 @@ import { Box, Container, Stack, Typography, Unstable_Grid2 as Grid } from "@mui/
 import { Layout as DashboardLayout } from "src/layouts/dashboard/layout";
 import { LeadDetails } from "src/sections/leads/lead-details";
 import { StatusDetails } from "src/sections/leads/lead-status-details";
-import { useRouter } from 'next/router';
+import { useRouter } from "next/router";
 
 const Page = () => {
-
   const router = useRouter();
   const { leadId } = router.query;
 
@@ -35,19 +34,19 @@ const Page = () => {
               </Grid>
             </div>
             <div>
-              <Grid container spacing={3}>
-                <Grid xs={12} md={6} lg={15}>
-                  <StatusDetails selectedLeadId={leadId} />
+              {leadId && (
+                <Grid container spacing={3}>
+                  <Grid xs={12} md={6} lg={15}>
+                    <StatusDetails selectedLeadId={leadId} />
+                  </Grid>
                 </Grid>
-              </Grid>
+              )}
             </div>
-
-
           </Stack>
         </Container>
       </Box>
     </>
-  )
+  );
 };
 
 Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
