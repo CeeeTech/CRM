@@ -83,8 +83,6 @@ async function login(req, res) {
         }
       : {};
 
-    console.log(permissions);
-
     // Create JWT token with user information and permissions
     const token = jwt.sign(
       { userId: _id, userEmail, userType, permissions },
@@ -92,8 +90,8 @@ async function login(req, res) {
       { expiresIn: "1h" }
     );
 
-    console.log("token", token);
-    console.log("decoded token", jwt.decode(token));
+    // Attach the decoded user information to the req object
+    req.user = jwt.decode(token);
 
     // Return the token along with success message and user data
     res.status(200).json({ message: "Login successful", token });
