@@ -1,26 +1,36 @@
 import Head from 'next/head';
 import { subDays, subHours } from 'date-fns';
-import { Box, Container, Unstable_Grid2 as Grid } from '@mui/material';
+import { Box, Container, Unstable_Grid2 as Grid, darken } from '@mui/material';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
-import { OverviewBudget } from 'src/sections/overview/overview-budget';
+import { OverviewCard } from 'src/sections/overview/overview-card';
 import { OverviewLatestOrders } from 'src/sections/overview/overview-latest-orders';
 import { OverviewLatestProducts } from 'src/sections/overview/overview-latest-products';
 import { OverviewSales } from 'src/sections/overview/overview-sales';
-import { OverviewTasksProgress } from 'src/sections/overview/overview-tasks-progress';
-import { OverviewTasksProgress1 } from 'src/sections/overview/overview-tasks-progress1';
-import { OverviewTasksProgress2 } from 'src/sections/overview/overview-tasks-progress2';
-import { OverviewTasksProgress3 } from 'src/sections/overview/overview-tasks-progress3';
-import { OverviewTasksProgress4 } from 'src/sections/overview/overview-tasks-progress4';
-import { OverviewTasksProgress5 } from 'src/sections/overview/overview-tasks-progress5';
-import { OverviewTasksProgress6 } from 'src/sections/overview/overview-tasks-progress6';
-import { OverviewTotalCustomers } from 'src/sections/overview/overview-total-customers';
-import { OverviewTotalProfit } from 'src/sections/overview/overview-total-profit';
-import { OverviewTotalProfit1 } from 'src/sections/overview/overview-total-profit1';
 import { OverviewTraffic } from 'src/sections/overview/overview-traffic';
+import React, {useState, useEffect} from "react";
 
 const now = new Date();
 
-const Page = () => (
+const Page = () => {
+  const [data, setData] = useState([]);
+
+  async function fetchStatusDetails() {
+    try {
+      const response = await fetch('http://localhost:8080/api/status');
+      const data = await response.json();
+      console.log(data);
+      setData(data);
+    } catch (error) {
+      console.error('Error fetching data:', error.message);
+    }
+  };
+
+  // Use useEffect to fetch data when the component mounts
+  useEffect(() => {
+    fetchStatusDetails();
+},[]);
+
+   return (  
   <>
     <Head>
       <title>
@@ -44,11 +54,12 @@ const Page = () => (
             sm={6}
             lg={3}
           >
-            <OverviewBudget
+            <OverviewCard
               difference={12}
               positive
               sx={{ height: '100%' }}
-              value="28"
+              value={data?.ringNoAnswerCount}
+              heading="Ring No Answer"
             />
           </Grid>
           <Grid
@@ -56,11 +67,12 @@ const Page = () => (
             sm={6}
             lg={3}
           >
-            <OverviewTotalCustomers
+            <OverviewCard
               difference={16}
               positive={false}
               sx={{ height: '100%' }}
-              value="52"
+              value={data?.registeredCount}
+              heading="REGISTERED"
             />
           </Grid>
           <Grid
@@ -68,9 +80,10 @@ const Page = () => (
             sm={6}
             lg={3}
           >
-            <OverviewTasksProgress
+            <OverviewCard
               sx={{ height: '100%' }}
-              value= "75"
+              value={data?.emailCount}
+              heading="SEND EMAIL"              
             />
           </Grid>
           <Grid
@@ -78,9 +91,10 @@ const Page = () => (
             sm={6}
             lg={3}
           >
-            <OverviewTotalProfit
+            <OverviewCard
               sx={{ height: '100%' }}
-              value="15"
+              value={data?.whatsappCount}
+              heading="WHATSAPP & SMS"
             />
           </Grid>
           <Grid
@@ -92,9 +106,10 @@ const Page = () => (
             sm={6}
             lg={3}
           >
-            <OverviewTotalProfit1
+            <OverviewCard
               sx={{ height: '100%', width: '35%' }}
-              value="18"
+              value={data?.meetingCount}
+              heading="SCHEDULE MEETINGS"
             />
           </Grid>
             <Grid
@@ -102,9 +117,10 @@ const Page = () => (
             sm={6}
             lg={3}
           >
-            <OverviewTasksProgress1
+            <OverviewCard
               sx={{ height: '100%', width: '35%' }}
-              value= "82"
+              value= {data?.cousedetailsCount}
+              heading="COUSE DETAILS SENT"
             />
           </Grid>
           <Grid
@@ -112,9 +128,10 @@ const Page = () => (
             sm={6}
             lg={3}
           >
-            <OverviewTasksProgress2
+            <OverviewCard
               sx={{ height: '100%', width: '35%' }}
-              value= "96"
+              value= {data?.nextintakeCount}
+              heading="NEXT INTAKE"
             />
           </Grid>
           <Grid
@@ -122,12 +139,13 @@ const Page = () => (
             sm={6}
             lg={3}
           >
-            <OverviewTasksProgress3
+            <OverviewCard
               sx={{ height: '100%', width: '35%' }}
-              value= "2"
+              value= {data?.droppedCount}
+              heading="DROPPED"
             />
           </Grid>
-          <Grid
+          {/* <Grid
             xs={12}
             sm={6}
             lg={3}
@@ -156,7 +174,7 @@ const Page = () => (
               sx={{ height: '100%', width: '35%' }}
               value= "6"
             />
-          </Grid>
+          </Grid> */}
             <OverviewSales
               chartSeries={[
                 {
@@ -298,12 +316,13 @@ const Page = () => (
       </Container>
     </Box>
   </>
-);
+);}
 
 Page.getLayout = (page) => (
   <DashboardLayout>
     {page}
   </DashboardLayout>
 );
+
 
 export default Page;
