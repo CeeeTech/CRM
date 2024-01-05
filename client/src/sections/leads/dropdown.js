@@ -6,13 +6,13 @@ import { MenuItem as BaseMenuItem, menuItemClasses } from "@mui/base/MenuItem";
 import { styled } from "@mui/system";
 
 export default function MenuSimple({ lead, selectedLead }) {
-  const [status, setStatus] = useState(lead.counsellor == null ? "Unassigned" : "Assigned");
+  const [status, setStatus] = useState(lead.counsellor == null ? "Unassigned" : lead.counsellor);
 
-  const createHandleMenuClick = (menuItem) => {
+  const createHandleMenuClick = (menuItem, name) => {
     return async () => {
       console.log(`Clicked on ${menuItem}`);
-      console.log(`selectted lead id ${selectedLead}`);
-
+      console.log(`selected lead id ${selectedLead}`);
+  
       try {
         const updateLead = await fetch(`http://localhost:8080/api/leads/${selectedLead}`, {
           method: "PATCH",
@@ -25,14 +25,15 @@ export default function MenuSimple({ lead, selectedLead }) {
           console.error("Error updating lead data", updateLead.statusText);
           return;
         } else {
-          console.log("successfully asiigned");
-          setStatus("Assigned");
+          console.log("Successfully assigned");
+          setStatus(name);
         }
       } catch (error) {
         console.log(error);
       }
     };
   };
+  
 
   const [counselors, setCounselors] = useState([]);
 
@@ -58,7 +59,7 @@ export default function MenuSimple({ lead, selectedLead }) {
       <MenuButton>{status}</MenuButton>
       <Menu slots={{ listbox: Listbox }}>
         {counselors.map((item) => (
-          <MenuItem onClick={createHandleMenuClick(item._id)}>{item.name}</MenuItem>
+          <MenuItem onClick={createHandleMenuClick(item._id, item.name)}>{item.name}</MenuItem>
         ))}
       </Menu>
     </Dropdown>

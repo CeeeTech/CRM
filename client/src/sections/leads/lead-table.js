@@ -1,5 +1,5 @@
-import PropTypes from 'prop-types';
-import { format } from 'date-fns';
+import PropTypes from "prop-types";
+import { format } from "date-fns";
 import {
   Avatar,
   Box,
@@ -13,11 +13,11 @@ import {
   TablePagination,
   TableRow,
   Typography,
-  Listbox
-} from '@mui/material';
-import { Scrollbar } from 'src/components/scrollbar';
-import { getInitials } from 'src/utils/get-initials';
-import Dropdown from './dropdown'
+  Listbox,
+} from "@mui/material";
+import { Scrollbar } from "src/components/scrollbar";
+import { getInitials } from "src/utils/get-initials";
+import Dropdown from "./dropdown";
 
 export const LeadsTable = (props) => {
   const {
@@ -32,13 +32,11 @@ export const LeadsTable = (props) => {
     onRowClick,
     page = 0,
     rowsPerPage = 0,
-    selected = []
+    selected = [],
   } = props;
 
-
-
-  const selectedSome = (selected.length > 0) && (selected.length < items.length);
-  const selectedAll = (items.length > 0) && (selected.leangth === items.length);
+  const selectedSome = selected.length > 0 && selected.length < items.length;
+  const selectedAll = items.length > 0 && selected.leangth === items.length;
 
   return (
     <Card>
@@ -60,24 +58,12 @@ export const LeadsTable = (props) => {
                     }}
                   />
                 </TableCell>
-                <TableCell>
-                  Student
-                </TableCell>
-                <TableCell>
-                  Sheduled At
-                </TableCell>
-                <TableCell>
-                  Sheduled To
-                </TableCell>
-                <TableCell>
-                  Course
-                </TableCell>
-                <TableCell>
-                  Branch
-                </TableCell>
-                <TableCell>
-                  Assign To
-                </TableCell>
+                <TableCell>Student</TableCell>
+                <TableCell>Status</TableCell>
+                <TableCell>Sheduled To</TableCell>
+                <TableCell>Course</TableCell>
+                <TableCell>Branch</TableCell>
+                <TableCell>Assign To</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -86,13 +72,8 @@ export const LeadsTable = (props) => {
                 // const createdAt = format(lead.createdAt, 'dd/MM/yyyy');
 
                 return (
-                  <TableRow
-                    hover
-                    key={lead.id}
-                    selected={isSelected}
-                    onClick={() => onRowClick?.(lead.id)}
-                  >
-                    <TableCell padding="checkbox" >
+                  <TableRow hover key={lead.id} selected={isSelected}>
+                    <TableCell padding="checkbox">
                       <Checkbox
                         checked={isSelected}
                         onChange={(event) => {
@@ -104,34 +85,20 @@ export const LeadsTable = (props) => {
                         }}
                       />
                     </TableCell>
-                    <TableCell>
-                      <Stack
-                        alignItems="center"
-                        direction="row"
-                        spacing={2}
-                      >
+                    <TableCell onClick={() => onRowClick?.(lead.id)}>
+                      <Stack alignItems="center" direction="row" spacing={2}>
                         {/* <Avatar src={lead.avatar}>
                           {getInitials(lead.name)}
                         </Avatar> */}
-                        <Typography variant="subtitle2">
-                          {lead.name}
-                        </Typography>
+                        <Typography variant="subtitle2">{lead.student.name}</Typography>
                       </Stack>
                     </TableCell>
+                    <TableCell onClick={() => onRowClick?.(lead.id)}>{lead.status}</TableCell>
+                    <TableCell onClick={() => onRowClick?.(lead.id)}>{lead.scheduled_to}</TableCell>
+                    <TableCell onClick={() => onRowClick?.(lead.id)}>{lead.course}</TableCell>
+                    <TableCell onClick={() => onRowClick?.(lead.id)}>{lead.branch}</TableCell>
                     <TableCell>
-                      {lead.scheduled_at}
-                    </TableCell>
-                    <TableCell>
-                      {lead.scheduled_to}
-                    </TableCell>
-                    <TableCell>
-                      {lead.course}
-                    </TableCell>
-                    <TableCell>
-                      {lead.branch}
-                    </TableCell>
-                    <TableCell>
-                    <Dropdown selectedLead={lead.id} lead={lead}/>
+                      <Dropdown selectedLead={lead.id} lead={lead} />
                     </TableCell>
                   </TableRow>
                 );
@@ -164,5 +131,5 @@ LeadsTable.propTypes = {
   onSelectOne: PropTypes.func,
   page: PropTypes.number,
   rowsPerPage: PropTypes.number,
-  selected: PropTypes.array
+  selected: PropTypes.array,
 };

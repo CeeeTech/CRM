@@ -1,39 +1,34 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useState, useEffect } from "react";
 import Head from "next/head";
-import { subDays, subHours } from "date-fns";
+import { useRouter } from "next/router";
+import { Box, Button, Container, Link, Stack, SvgIcon, Typography } from "@mui/material";
 import ArrowDownOnSquareIcon from "@heroicons/react/24/solid/ArrowDownOnSquareIcon";
 import ArrowUpOnSquareIcon from "@heroicons/react/24/solid/ArrowUpOnSquareIcon";
 import PlusIcon from "@heroicons/react/24/solid/PlusIcon";
-import { Box, Button, Container, Link, Stack, SvgIcon, Typography } from "@mui/material";
 import { useSelection } from "src/hooks/use-selection";
 import { Layout as DashboardLayout } from "src/layouts/dashboard/layout";
 import { LeadsTable } from "src/sections/leads/lead-table";
 import { LeadsSearch } from "src/sections/leads/lead-search";
-import { useEffect } from "react";
-import { useRouter } from "next/router";
 
 const now = new Date();
 
+// Custom hook for managing leads data
 const useLeads = (page, rowsPerPage) => {
   const [data, setData] = useState([]);
 
+  // Function to apply pagination to leads data
   const applyPagination = (page, rowsPerPage) => {
     return data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
   };
 
   const leads = useMemo(() => {
-    // console.log('Processed Leads:', applyPagination(page, rowsPerPage));
     return applyPagination(page, rowsPerPage);
   }, [page, rowsPerPage, data]);
 
-  return {
-    data,
-    setData,
-    leads,
-    applyPagination,
-  };
+  return { data, setData, leads, applyPagination };
 };
 
+// Custom hook for extracting lead ids from leads data
 const useLeadIds = (leads) => {
   return leads.map((lead) => lead.id);
 };
@@ -47,6 +42,7 @@ const Page = () => {
   const [selectedLeadId, setSelectedLeadId] = useState(null);
   const router = useRouter();
 
+  // Handlers for page change and rows per page change
   const handlePageChange = useCallback((event, value) => {
     setPage(value);
   }, []);
@@ -55,26 +51,20 @@ const Page = () => {
     setRowsPerPage(event.target.value);
   }, []);
 
+  // Handler for row click
   const handleRowClick = useCallback(
     async (id, event) => {
-      if (event) {
-        event.preventDefault();
-      }
-
-      console.log("Row clicked. Lead ID:", id);
       setSelectedLeadId(id);
-
-      if (router) {
-        await router.push(`/leads/lead-form?leadId=${id}`);
-        // setShowUpdateForm(true);
-      }
+      await router.push(`/leads/lead-form?leadId=${id}`);
     },
     [setSelectedLeadId, router]
   );
 
+  // Handlers for lead selection/deselection
   const handleSelectOne = useCallback(
     (id) => {
       leadsSelection.handleSelectOne(id);
+      console.log("Selected Lead Id:", id);
     },
     [leadsSelection]
   );
@@ -94,74 +84,78 @@ const Page = () => {
     leadsSelection.handleDeselectAll();
   }, [leadsSelection]);
 
-  const selectedLead = useMemo(() => {
-    return data.find((lead) => lead.id === selectedLeadId);
-  }, [selectedLeadId]);
-
-  // handle click on add new lead button
-  const handleAddNewLead = () => {
-    router.push(`/leads/lead-form`);
-  };
-
   useEffect(() => {
-
-    const fetchLeads = async () => {
-      try {
-        const response = await fetch('http://localhost:8080/api/leads');
-        const leadData = await response.json();
-        // console.log(leadData);
-
-        const fetchAdditionalInfo = async (lead) => {
-          const studentResponse = await fetch(`http://localhost:8080/api/students/${lead.student_id}`);
-          const studentData = await studentResponse.json();
-
-          const courseResponse = await fetch(`http://localhost:8080/api/courses/${lead.course_id}`);
-          const courseData = await courseResponse.json();
-
-          const branchResponse = await fetch(`http://localhost:8080/api/branches/${lead.branch_id}`);
-          const branchData = await branchResponse.json();
-
-          const followUpResponse = await fetch(`http://localhost:8080/api/followups/by-lead/${lead._id}`);
-          const followUpData = await followUpResponse.json();
-
-          const statusResponse = await fetch(`http://localhost:8080/api/status/${followUpData[0].status_id}`);
-          const statusDta = await statusResponse.json();
-
-          return {
-            id: lead._id,
-            scheduled_at: lead.sheduled_at,
-            scheduled_to: lead.sheduled_to,
-            date: lead.date,
-            name: studentData.name,
-            dob: studentData.dob,
-            email: studentData.email,
-            mobile: studentData.contact_no,
-            address: studentData.address,
-            course: courseData.name,
-            branch: branchData.name,
-            comment: followUpData[0].comment,
-            status: statusDta.name,
-            followUp_id: followUpData[0]._id,
-            counsellor: lead.counsellor_id
-          };
-        };
-
-        // Fetch additional information for all leads concurrently
-        const additionalInfoPromises = leadData.map(fetchAdditionalInfo);
-        const additionalInfo = await Promise.all(additionalInfoPromises);
-
-
-        setData(additionalInfo);
-
-        // console.log("Additional info data", additionalInfo);
-      } catch (error) {
-        console.error('Error fetching leads:', error);
-      }
-    };
-
     fetchLeads();
+  }, [page, rowsPerPage]);
 
-  }, [setData, page, rowsPerPage]);
+  // function to fetch lead details from server
+  async function fetchLeads() {
+    // try {
+    //   const response = await fetch("http://localhost:8080/api/leads");
+    //   const leadData = await response.json();
+    //   // console.log(leadData);
+
+    //   const fetchAdditionalInfo = async (lead) => {
+    //     const studentResponse = await fetch(
+    //       `http://localhost:8080/api/students/${lead.student_id}`
+    //     );
+    //     const studentData = await studentResponse.json();
+
+    //     const courseResponse = await fetch(`http://localhost:8080/api/courses/${lead.course_id}`);
+    //     const courseData = await courseResponse.json();
+
+    //     const branchResponse = await fetch(`http://localhost:8080/api/branches/${lead.branch_id}`);
+    //     const branchData = await branchResponse.json();
+
+    //     const followUpResponse = await fetch(
+    //       `http://localhost:8080/api/followups/by-lead/${lead._id}`
+    //     );
+    //     const followUpData = await followUpResponse.json();
+
+    //     const statusResponse = await fetch(
+    //       `http://localhost:8080/api/status/${followUpData[0].status_id}`
+    //     );
+    //     const statusDta = await statusResponse.json();
+
+    //     return {
+    //       id: lead._id,
+    //       scheduled_at: lead.sheduled_at,
+    //       scheduled_to: lead.sheduled_to,
+    //       date: lead.date,
+    //       name: studentData.name,
+    //       dob: studentData.dob,
+    //       email: studentData.email,
+    //       mobile: studentData.contact_no,
+    //       address: studentData.address,
+    //       course: courseData.name,
+    //       branch: branchData.name,
+    //       comment: followUpData[0].comment,
+    //       status: statusDta.name,
+    //       followUp_id: followUpData[0]._id,
+    //       counsellor: lead.counsellor_id,
+    //     };
+    //   };
+
+    //   // Fetch additional information for all leads concurrently
+    //   const additionalInfoPromises = leadData.map(fetchAdditionalInfo);
+    //   const additionalInfo = await Promise.all(additionalInfoPromises);
+
+    //   setData(additionalInfo);
+
+    //   // console.log("Additional info data", additionalInfo);
+    // } catch (error) {
+    //   console.error("Error fetching leads:", error);
+    // }
+    try {
+      const res = await fetch("http://localhost:8080/api/leads-details");
+      const data = await res.json();
+
+      console.log(data);
+      setData(data);
+    } catch (error) {
+      console.log("Error fetching courses:", error);
+    }
+  };
 
   // Separate useEffect for handling selectedLeadId changes
   useEffect(() => {
@@ -169,6 +163,10 @@ const Page = () => {
       // console.log('Selected Lead Details:', selectedLeadId, selectedLead);
     }
   }, [selectedLeadId]);
+
+  const handleAddNewLead = () => {
+    router.push(`/leads/lead-form`);
+  };
 
   return (
     <>
@@ -181,13 +179,7 @@ const Page = () => {
         <Head>
           <title>Leads | Devias Kit</title>
         </Head>
-        <Box
-          component="main"
-          sx={{
-            flexGrow: 1,
-            py: 8,
-          }}
-        >
+        <Box component="main" sx={{ flexGrow: 1, py: 8 }}>
           <Container maxWidth="xl">
             <Stack spacing={3}>
               <Stack direction="row" justifyContent="space-between" spacing={4}>

@@ -7,5 +7,6 @@ router.get('/leads', leadController.getLeads)
 router.post('/leads', leadController.addLead)
 router.get('/leads/:id', leadController.getLead)
 router.patch('/leads/:id', leadController.updateLead)
+router.get('/leads-details', leadController.getLeadsSummaryDetails)
 
 module.exports = router
