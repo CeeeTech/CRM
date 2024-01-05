@@ -86,7 +86,7 @@ const Page = () => {
 
   useEffect(() => {
     fetchLeads();
-  }, [page, rowsPerPage]);
+  }, []);
 
   // function to fetch lead details from server
   async function fetchLeads() {

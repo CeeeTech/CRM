@@ -98,14 +98,5 @@ export const items = [
         <LockClosedIcon />
       </SvgIcon>
     )
-  },
-  {
-    title: 'Register',
-    path: '/auth/add-new-user',
-    icon: (
-      <SvgIcon fontSize="small">
-        <UserPlusIcon />
-      </SvgIcon>
-    )
   }
 ];
