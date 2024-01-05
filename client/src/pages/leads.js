@@ -10,7 +10,6 @@ import { Layout as DashboardLayout } from "src/layouts/dashboard/layout";
 import { LeadsTable } from "src/sections/leads/lead-table";
 import { LeadsSearch } from "src/sections/leads/lead-search";
 import { useEffect } from "react";
-// import AddNewLead from '../pages/leads/addNewLead';
 import { useRouter } from "next/router";
 
 const now = new Date();
@@ -46,7 +45,6 @@ const Page = () => {
   const leadsIds = useLeadIds(leads);
   const leadsSelection = useSelection(leadsIds);
   const [selectedLeadId, setSelectedLeadId] = useState(null);
-  const [showUpdateForm, setShowUpdateForm] = useState(false);
   const router = useRouter();
 
   const handlePageChange = useCallback((event, value) => {
