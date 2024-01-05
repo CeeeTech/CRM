@@ -16,7 +16,7 @@ const Page = () => {
 
   async function fetchStatusDetails() {
     try {
-      const response = await fetch('http://localhost:8080/api/status');
+      const response = await fetch('http://localhost:8080/api/status-count');
       const data = await response.json();
       console.log(data);
       setData(data);
