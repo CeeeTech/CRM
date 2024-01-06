@@ -14,7 +14,7 @@ import {
     Typography
 } from '@mui/material';
 
-export const StatusDetails = ({ selectedLeadId, lead }) => {
+export const StatusDetails = ({ selectedLeadId }) => {
 
     const [data, setData] = useState([
         {
@@ -47,6 +47,7 @@ export const StatusDetails = ({ selectedLeadId, lead }) => {
     }
 
     useEffect(() => {
+        console.log("followup lead id", selectedLeadId)
         const fetchFollowUpHistory = async () => {
             try {
                 const response = await fetch(`http://localhost:8080/api/followups/by-lead/${selectedLeadId}`);
@@ -54,10 +55,10 @@ export const StatusDetails = ({ selectedLeadId, lead }) => {
                     const followUp = await response.json();
 
                     const fetchAdditionalInfo = async (followUp) => {
-                        const userResponse = await fetch(`http://localhost:8080/api/users/${followUp.user_id}`);
+                        const userResponse = await fetch(`http://localhost:8080/api/users/${followUp[0].user_id}`);
                         const usertData = await userResponse.json();
 
-                        const statusResponse = await fetch(`http://localhost:8080/api/status/${followUp.status_id}`);
+                        const statusResponse = await fetch(`http://localhost:8080/api/status/${followUp[0].status_id}`);
                         const statusData = await statusResponse.json();
 
                         return {
@@ -81,7 +82,10 @@ export const StatusDetails = ({ selectedLeadId, lead }) => {
                 console.error('Error fetching followup:', error.message);
             }
         }
-        fetchFollowUpHistory();
+        if (selectedLeadId != null) {
+            // fetchFollowUpHistory();
+
+        }
     }, [])
 
 
