@@ -5,7 +5,7 @@ import { AccountProfile } from 'src/sections/account/account-profile';
 import { AccountProfileDetails } from 'src/sections/account/account-profile-details';
 import { StatusDetails } from 'src/sections/account/account-status-details';
 
-const Form = ({ lead, selectedLeadId }) => (
+const Form = ({ selectedLeadId }) => (
     <>
         <Head>
             <title>
@@ -44,7 +44,7 @@ const Form = ({ lead, selectedLeadId }) => (
                                 md={6}
                                 lg={8}
                             >
-                                <AccountProfileDetails selectedLeadId={selectedLeadId} lead={lead} />
+                                <AccountProfileDetails selectedLeadId={selectedLeadId} />
                             </Grid>
 
                         </Grid>
@@ -60,7 +60,7 @@ const Form = ({ lead, selectedLeadId }) => (
                                 md={6}
                                 lg={8}
                             >
-                                <StatusDetails selectedLeadId={selectedLeadId} lead={lead} />
+                                <StatusDetails selectedLeadId={selectedLeadId}  />
                             </Grid>
                         </Grid>
                     </div>
