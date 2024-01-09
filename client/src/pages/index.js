@@ -8,6 +8,7 @@ import { OverviewLatestProducts } from "src/sections/overview/overview-latest-pr
 import { OverviewSales } from "src/sections/overview/overview-sales";
 import { OverviewTraffic } from "src/sections/overview/overview-traffic";
 import React, { useState, useEffect, use } from "react";
+import { get } from "http";
 
 const now = new Date();
 
@@ -15,7 +16,12 @@ const Page = () => {
   const [data, setData] = useState([]);
   const [courseData, setCourseData] = useState([]);
   const [leadData, setLeadData] = useState([]);
+  const [leadsCountByMonth, setLeadsCountByMonth] = useState({});
+  const [counsellorData, setCounsellorData] = useState([]);
   const [isTrue, setIsTrue] = useState(false);
+
+
+  //fetch status details
 
   async function fetchStatusDetails() {
     try {
@@ -28,6 +34,7 @@ const Page = () => {
     }
   }
 
+  //fetch course details
 
   async function fetchCourseDetails() {
     try {
@@ -43,42 +50,62 @@ const Page = () => {
         console.error("Error fetching data:", error.message);
     }
 }
- //frech leads
- async function fetchLeads() {
+
+
+//  frech leads details 
+
+async function fetchLeads() {
   try {
     const response = await fetch("http://localhost:8080/api/leads");
-    const allLeads = await response.json();
+    const leadData = await response.json();
 
-    // Group leads by month and count them
-    const leadsByMonth = allLeads.reduce((result, lead) => {
-      const date = new Date(lead.createdAt);
-      const monthYearKey = `${date.getMonth() + 1}-${date.getFullYear()}`;
+    // Group leads by month
+    const groupedLeads = groupLeadsByMonth(leadData);
 
-      if (!result[monthYearKey]) {
-        result[monthYearKey] = { month: date.getMonth() + 1, year: date.getFullYear(), count: 0 };
-      }
+    // Get the count of leads for each month
+    const leadsCountByMonth = getLeadsCountByMonth(groupedLeads);
 
-      result[monthYearKey].count += 1;
+    // // Do something with the leads count, for example:
+    // console.log(leadsCountByMonth);
 
-      return result;
-    }, {});
-
-    // Convert the grouped leads to an array
-    const leadsCountByMonth = Object.values(leadsByMonth);
-
-    setLeadData(leadsCountByMonth);
+    // Set the leads count and update state
+    setLeadsCountByMonth(leadsCountByMonth);
     setIsTrue(true);
-
-    console.log(leadsCountByMonth);
 
   } catch (error) {
     console.error("Error fetching data:", error.message);
   }
 }
 
+function groupLeadsByMonth(leadData) {
+  const groupedLeads = {};
 
+  leadData.forEach(lead => {
+    const date = new Date(lead.date);
+    const monthYear = new Intl.DateTimeFormat('en-US', { month: 'long', year: 'numeric' }).format(date);
 
-  
+    if (!groupedLeads[monthYear]) {
+      groupedLeads[monthYear] = [];
+    }
+
+    groupedLeads[monthYear].push(lead);
+  });
+
+  return groupedLeads;
+}
+
+function getLeadsCountByMonth(groupedLeads) {
+  const leadsCountByMonth = {};
+
+  // Calculate the count of leads for each month
+  for (const monthYear in groupedLeads) {
+    const leadsCount = groupedLeads[monthYear].length;
+    leadsCountByMonth[monthYear] = leadsCount;
+  }
+
+  return leadsCountByMonth;
+}
+
 
   // Use useEffect to fetch data when the component mounts
   useEffect(() => {
@@ -93,7 +120,10 @@ const Page = () => {
     fetchLeads();
   }, []);
 
-  // console.log(leadData);
+  
+
+
+
 
   const cardData1 = [
     { heading: "Ring No Answer", value: data?.ringNoAnswerCount, difference: 12, positive: true, sx: { height: "100%" } },
@@ -110,6 +140,7 @@ const cardData2 = [
   { heading: "DROPPED", value: data?.droppedCount, sx: { height: "100%" } },
   { heading: "NEW", value: data?.NewCount, sx: { height: "100%" } },
 ];
+
   
 
   return (
@@ -144,22 +175,18 @@ const cardData2 = [
                
                 <OverviewSales
                   chartSeries={[
-                    {
-                      name: "This year",
-                      data: [18, 16, 5, 8, 3, 14, 14, 16, 17, 19, 18, 20],
-                    },
-                    {
-                      name: "Last year",
-                      data: [12, 11, 4, 6, 2, 9, 9, 10, 11, 12, 13, 13],
-                    },
+                  {name: "This year",
+                   data: Object.values(leadsCountByMonth)},
                   ]}
                   sx={{ height: "100%" }}
                 />
+  
               </Grid>
+
               <Grid xs={12} md={6} lg={4}>
                 <OverviewTraffic
-                  chartSeries={[63, 15, 22]}
-                  labels={["Desktop", "Tablet", "Phone"]}
+                  chartSeries={[data?.ringNoAnswerCount, data?.registeredCount, data?.emailCount, data?.whatsappCount, data?.meetingCount, data?.cousedetailsCount, data?.nextintakeCount, data?.droppedCount, data?.NewCount]}
+                  labels={["Ring No Answer", "REGISTERED", "SEND EMAIL", "WHATSAPP & SMS", "SCHEDULE MEETINGS", "COUSE DETAILS SENT", "NEXT INTAKE", "DROPPED", "NEW"]}
                   sx={{ height: "100%" }}
                 />
               </Grid>

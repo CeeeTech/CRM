@@ -24,7 +24,13 @@ const useChartOptions = (labels) => {
     colors: [
       theme.palette.primary.main,
       theme.palette.success.main,
-      theme.palette.warning.main
+      theme.palette.warning.main,
+      theme.palette.error.main,
+      theme.palette.info.main,
+      theme.palette.grey[300],
+      theme.palette.grey[500],
+      theme.palette.grey[800],
+      theme.palette.grey[900]
     ],
     dataLabels: {
       enabled: false
@@ -111,19 +117,20 @@ export const OverviewTraffic = (props) => {
                 sx={{
                   display: 'flex',
                   flexDirection: 'column',
-                  alignItems: 'center'
+                  alignItems: 'center',
                 }}
               >
                 {iconMap[label]}
                 <Typography
                   sx={{ my: 1 }}
-                  variant="h6"
+                  variant="body2"
                 >
                   {label}
                 </Typography>
                 <Typography
                   color="text.secondary"
                   variant="subtitle2"
+
                 >
                   {item}%
                 </Typography>
