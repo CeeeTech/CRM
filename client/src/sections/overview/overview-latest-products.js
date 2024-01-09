@@ -2,6 +2,7 @@ import { formatDistanceToNow } from 'date-fns';
 import PropTypes from 'prop-types';
 import ArrowRightIcon from '@heroicons/react/24/solid/ArrowRightIcon';
 import EllipsisVerticalIcon from '@heroicons/react/24/solid/EllipsisVerticalIcon';
+
 import {
   Box,
   Button,
@@ -26,14 +27,14 @@ export const OverviewLatestProducts = (props) => {
       <List>
         {products.map((product, index) => {
           const hasDivider = index < products.length - 1;
-          const ago = formatDistanceToNow(product.updatedAt);
+          // const ago = formatDistanceToNow(product.updatedAt);
 
           return (
             <ListItem
               divider={hasDivider}
               key={product.id}
             >
-              <ListItemAvatar>
+              {/* <ListItemAvatar>
                 {
                   product.image
                     ? (
@@ -58,25 +59,25 @@ export const OverviewLatestProducts = (props) => {
                       />
                     )
                 }
-              </ListItemAvatar>
+              </ListItemAvatar> */}
               <ListItemText
                 primary={product.name}
                 primaryTypographyProps={{ variant: 'subtitle1' }}
-                secondary={`Updated ${ago} ago`}
+                secondary={product.description}
                 secondaryTypographyProps={{ variant: 'body2' }}
               />
-              <IconButton edge="end">
+              {/* <IconButton edge="end">
                 <SvgIcon>
                   <EllipsisVerticalIcon />
                 </SvgIcon>
-              </IconButton>
+              </IconButton> */}
             </ListItem>
           );
         })}
       </List>
       <Divider />
       <CardActions sx={{ justifyContent: 'flex-end' }}>
-        <Button
+        <Button href='/courses'
           color="inherit"
           endIcon={(
             <SvgIcon fontSize="small">
