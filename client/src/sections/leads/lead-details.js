@@ -12,6 +12,8 @@ import {
   Unstable_Grid2 as Grid
 } from '@mui/material';
 import PlusIcon from '@heroicons/react/24/solid/PlusIcon';
+import { useAuth } from "src/hooks/use-auth";
+// import { localeData } from 'numeral';
 
 
 export const LeadDetails = ({ selectedLeadId }) => {
@@ -38,25 +40,30 @@ export const LeadDetails = ({ selectedLeadId }) => {
 
   const [values, setValues] = useState({
     name: '',
-    dob: formattedDate,
+    dob: '',
     email: '',
-    phone: '',
+    contact_no: '',
     address: '',
     date: formattedDate,
-    scheduled_to: formattedDate,
+    scheduled_to: '',
     course: 'Computer Science',
     branch: 'Colombo',
     status: 'Registered',
     comment: '',
-    updateDate: formattedDate,
+    // updateDate: formattedDate,
     followupId: ''
   });
 
   const [selectedBranchId, setSelectedBranchId] = useState('');
   const [selectedCourseId, setSelectedCourseId] = useState('');
-
+  const [selectedStatusId, setselectedStatusId] = useState('');
+  const { user } = useAuth();
+  const [changedFields, setChangedFields] = useState({});
+  const [studentId, setStudentId] = useState('');
 
   useEffect(() => {
+
+
     const fetchLeadData = async () => {
       try {
         const leadResponse = await fetch(`http://localhost:8080/api/leads/${selectedLeadId}`);
@@ -89,12 +96,12 @@ export const LeadDetails = ({ selectedLeadId }) => {
                   const statusResponse = await fetch(`http://localhost:8080/api/status/${followUpData[0].status_id}`);
                   const statusDta = await statusResponse.json();
 
-                  console.log("fs5", selectedLeadId)
+                  console.log("fs5", studentData.email)
                   setValues({
                     name: studentData.name,
                     dob: formatDate(studentData.dob),
                     email: studentData.email,
-                    phone: studentData.contact_no,
+                    contact_no: studentData.contact_no,
                     address: studentData.address,
                     date: formatDate(leadData.date),
                     scheduled_to: formatDate(leadData.sheduled_to),
@@ -102,7 +109,7 @@ export const LeadDetails = ({ selectedLeadId }) => {
                     branch: branchData.name,
                     status: statusDta.name,
                     comment: followUpData[0].comment,
-                    updateDate: formatDate(followUpData[0].date),
+                    // updateDate: formatDate(followUpData[0].date),
                     followupId: followUpData[0]._id
                   })
 
@@ -182,15 +189,24 @@ export const LeadDetails = ({ selectedLeadId }) => {
         ...prevState,
         [name]: value
       }));
+
+      setChangedFields((prevChangedFields) => ({
+        ...prevChangedFields,
+        [name]: value
+      }));
+
       if (name === 'branch') {
         const selectedBranch = branches.find((branch) => branch.name === value);
         setSelectedBranchId(selectedBranch ? selectedBranch._id : '');
       } else if (name === 'course') {
         const selectedCourse = courses.find((course) => course.name === value);
         setSelectedCourseId(selectedCourse ? selectedCourse._id : '');
+      } else if (name === 'status') {
+        const selectedStatus = statuses.find((status) => status.name === value);
+        setselectedStatusId(selectedStatus ? selectedStatus._id : '');
       }
     },
-    [branches, courses, selectedLeadId, update]
+    [branches, courses, selectedLeadId, update, statuses]
   );
 
   // useEffect(() => {
@@ -209,7 +225,7 @@ export const LeadDetails = ({ selectedLeadId }) => {
             body: JSON.stringify({
               name: values.name,
               dob: values.dob,
-              contact_no: values.phone,
+              contact_no: values.contact_no,
               email: values.email,
               address: values.address
             })
@@ -222,6 +238,7 @@ export const LeadDetails = ({ selectedLeadId }) => {
           const { _id: student_id } = studentData;
           console.log("Student ID:", student_id);
           //insert lead data
+
           const leadResponse = await fetch('http://localhost:8080/api/leads', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -230,27 +247,27 @@ export const LeadDetails = ({ selectedLeadId }) => {
               "sheduled_to": values.scheduled_to,
               "course_name": values.course,
               "branch_name": values.branch,
-              "student_id": student_id
+              "student_id": student_id,
+              "user_id": user.userId
             })
           })
           if (!leadResponse.ok) {
             console.error("Error inserting data to the lead table", leadResponse.statusText);
             return
           }
-          const leadData = await leadResponse.json();
-          const { _id: lead_id } = leadData;
+          const LeadData = await leadResponse.json();
+          const { _id: lead_id } = LeadData;
           console.log("Lead ID:", lead_id);
-          //insert follow-up data
+          //insert followup
           const followUpResponse = await fetch('http://localhost:8080/api/followUps', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(
               {
                 "lead_id": lead_id,
-                "user": 'Hana Amaily',
-                "status": values.status,
-                "comment": values.comment,
-                "date": values.updateDate
+                "user_id": user.userId,
+                "status": "New",
+                "comment": values.comment
               }
             )
           });
@@ -262,64 +279,139 @@ export const LeadDetails = ({ selectedLeadId }) => {
         } else {
           //update code
           console.log("update code");
-          const updateFollowupData = {
-            user:'John Doe',
-            date: values.updateDate,
-            lead_id: selectedLeadId
-          };
+          console.log("update code", changedFields.scheduled_to);
+
+          console.log("Debugging - scheduled_to:", changedFields.scheduled_to);
+          console.log("Debugging - selectedCourseId:", selectedCourseId);
+          console.log("Debugging - selectedStatusId:", selectedStatusId);
+          console.log("Debugging - selectedBranchId:", selectedBranchId);
+          console.log("Debugging - email:", changedFields.email);
+          console.log("Debugging - address:", changedFields.address);
+          console.log("Debugging - name:", changedFields.name);
+          console.log("Debugging - dob:", changedFields.dob);
+          console.log("Debugging - contact_no:", changedFields.contact_no);
+
+
+          //update student data
+          if (changedFields.email != null || changedFields.address != null || changedFields.name != null || changedFields.dob != null || changedFields.contact_no != null) {
+
+            console.log("third", changedFields.scheduled_to);
+            const Lead = await fetch(`http://localhost:8080/api/leads/${selectedLeadId}`);
+            if (!Lead.ok) {
+              console.error("Error fetching lead data", Lead.statusText);
+              return
+            }
+
+            const LeadData = await Lead.json();
+            const { student_id: sid } = LeadData;
+            console.log("sid2", sid)
+
+            console.log("sid3", studentId)
+
+            if (Object.keys(changedFields).length > 0) {
+              console.log(changedFields)
+              console.log(studentId)
+              // Only send the changed fields to the server for update
+              const updateStudentData = {
+                ...changedFields
+              };
+              console.log(updateStudentData)
+              const updatestudent = await fetch(`http://localhost:8080/api/students/${sid}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(updateStudentData)
+              })
+
+              if (!updatestudent.ok) {
+                console.error("Error updating student data", updatestudent.statusText);
+                return
+              }
+              console.log("only student updated")
+
+            }
+          }
+
+          //update lead data
+          if (changedFields.scheduled_to != null || selectedCourseId !== "" || selectedBranchId !== "") {
+
+            console.log("first");
+
+            const updateLeadData = {
+              scheduled_at: formattedDate
+            };
+
+            if (selectedCourseId != "") {
+              updateLeadData.course_id = selectedCourseId;
+            }
+            if (selectedBranchId != "") {
+              updateLeadData.branch_id = selectedBranchId;
+            }
+            if (changedFields.scheduled_to != null) {
+              updateLeadData.scheduled_to = changedFields.scheduled_to;
+            }
+            console.log(changedFields)
+            const updateLead = await fetch(`http://localhost:8080/api/leads/${selectedLeadId}`, {
+              method: 'PATCH',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(updateLeadData)
+            })
+            if (!updateLead.ok) {
+              console.error("Error updating lead data", updateLead.statusText);
+              return
+            }
+            console.log("only lead updated")
+
+          }
+
+          //followup add
           console.log(values.followupId);
-          const selectedStatusId = statuses.find((option) => option.name === values.status)?._id;
-          if (values.comment != "") {
-            updateFollowupData.comment = values.comment;
-          }
-          if (selectedStatusId != "") {
-            updateFollowupData.status = values.status;
-          }
 
-          const addFollowup = await fetch(`http://localhost:8080/api/followUps`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(updateFollowupData)
-          })
 
-          if (!addFollowup.ok) {
+          console.log("stsid", selectedStatusId);
+
+          if (selectedStatusId != "" || changedFields.comment != null) {
+
+            const updateFollowupData = {
+              user_id: user.userId,
+              lead_id: selectedLeadId
+            };
+
+            if (values.comment != "") {
+              updateFollowupData.comment = values.comment;
+            }
+            if (selectedStatusId != "") {
+              updateFollowupData.status = values.status;
+            }
+
+            const addFollowup = await fetch(`http://localhost:8080/api/followUps`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(updateFollowupData)
+            })
+
+            if (!addFollowup.ok) {
+
+              console.error("Error adding followup data", addFollowup.statusText);
+              return
+            }
             console.log("update followup")
-            console.error("Error adding followup data", addFollowup.statusText);
-            return
-          }
-          
-          const updateLeadData = {
-            sheduled_to: values.scheduled_to,
-          };
-
-          if (selectedCourseId != "") {
-            updateLeadData.course_id = selectedCourseId;
-          }
-          if (selectedBranchId != "") {
-            updateLeadData.branch_id = selectedBranchId;
           }
 
-          const updateLead = await fetch(`http://localhost:8080/api/leads/${selectedLeadId}`, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(updateLeadData)
-          })
-          if (!updateLead.ok) {
-            console.error("Error updating lead data", updateLead.statusText);
-            return
-          }
+
+
 
           // console.log(selectedCourseId, selectedBranchId);
           console.log('Data updated successfully!');
         }
+        setChangedFields({});
         setValues({
           name: '',
-          dob: formattedDate,
+          dob: '',
           email: '',
-          phone: '',
+          contact_no: '',
           address: '',
           date: formattedDate,
-          scheduled_to: formattedDate,
+          scheduled_to: '',
           course: 'Computer Science',
           branch: 'Colombo',
           status: 'Registered',
@@ -331,7 +423,7 @@ export const LeadDetails = ({ selectedLeadId }) => {
         console.error('Error during data insertion:', error.message);
       }
     },
-    [values, update]
+    [values, update, changedFields, user.userId, studentId]
   );
 
   return (
@@ -375,7 +467,6 @@ export const LeadDetails = ({ selectedLeadId }) => {
                   label="Date of Birth"
                   name="dob"
                   onChange={handleChange}
-                  required
                   type='date'
                   value={values.dob}
                 />
@@ -389,7 +480,6 @@ export const LeadDetails = ({ selectedLeadId }) => {
                   label="Email Address"
                   name="email"
                   onChange={handleChange}
-                  required
                   value={values.email}
                 />
               </Grid>
@@ -401,10 +491,10 @@ export const LeadDetails = ({ selectedLeadId }) => {
                 <TextField
                   fullWidth
                   label="Phone Number"
-                  name="phone"
+                  name="contact_no"
                   onChange={handleChange}
                   type="number"
-                  value={values.phone}
+                  value={values.contact_no}
                   required
                 />
               </Grid>
@@ -434,7 +524,7 @@ export const LeadDetails = ({ selectedLeadId }) => {
                   onChange={handleChange}
                   type="text"
                   value={values.date}
-                  required
+
                 />
               </Grid>
               <Grid
@@ -448,7 +538,7 @@ export const LeadDetails = ({ selectedLeadId }) => {
                   onChange={handleChange}
                   type="date"
                   value={values.scheduled_to}
-                  required
+
                 />
               </Grid>
               <Grid
@@ -515,7 +605,7 @@ export const LeadDetails = ({ selectedLeadId }) => {
               </Button>
             </Box>) : (<></>)}
 
-            {statusForm == true || update == false ? (<Grid container spacing={3}>
+            {statusForm == true ? (<Grid container spacing={3}>
               {/* ............................ */}
               <Grid
                 xs={12}
@@ -547,7 +637,7 @@ export const LeadDetails = ({ selectedLeadId }) => {
                   )}
                 </TextField>
               </Grid>
-              <Grid
+              {/* <Grid
                 xs={12}
                 md={6}
               >
@@ -560,7 +650,7 @@ export const LeadDetails = ({ selectedLeadId }) => {
                   value={values.updateDate}
                   required
                 />
-              </Grid>
+              </Grid> */}
               <Grid
                 xs={12}
                 md={12}

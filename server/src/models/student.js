@@ -2,9 +2,9 @@ const mongoose = require("mongoose");
 
 const studentSchema = new mongoose.Schema({
   name: String,
-  dob: Date,
+  dob: { type: Date, required: false },
   contact_no: String,
-  email: String,
+  email: { type: String, required: false },
   address: String
   // Add other fields as needed
 });

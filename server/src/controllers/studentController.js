@@ -38,8 +38,32 @@ async function getStudent(req, res) {
 
 }
 
+//update student
+async function updateStudent(req, res) {
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    res.status(404).json({ error: "No such Student" });
+  }
+
+  const student = await Student.findByIdAndUpdate(
+    { _id: id },
+    {
+      ...req.body,
+    }
+  );
+
+  if (!student) {
+    res.status(400).json({ error: "no such Student" });
+  }
+
+  res.status(200).json(student);
+}
+
 module.exports = {
   getStudents,
   addStudent,
-  getStudent
+  getStudent,
+  updateStudent,
+  
 };

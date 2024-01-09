@@ -56,27 +56,31 @@ export const StatusDetails = ({ selectedLeadId }) => {
                 const response = await fetch(`http://localhost:8080/api/followups/by-lead/${selectedLeadId}`);
                 if (response.ok) {
                     const followUpArray = await response.json();
+                    if (followUpArray != null) {
+                        const additionalInfo = await Promise.all(
+                            followUpArray.map(async (followUp) => {
+                                const userResponse = await fetch(`http://localhost:8080/api/users/${followUp.user_id}`);
+                                const usertData = await userResponse.json();
 
-                    const additionalInfo = await Promise.all(
-                        followUpArray.map(async (followUp) => {
-                            const userResponse = await fetch(`http://localhost:8080/api/users/${followUp.user_id}`);
-                            const usertData = await userResponse.json();
+                                const statusResponse = await fetch(`http://localhost:8080/api/status/${followUp.status_id}`);
+                                const statusData = await statusResponse.json();
 
-                            const statusResponse = await fetch(`http://localhost:8080/api/status/${followUp.status_id}`);
-                            const statusData = await statusResponse.json();
+                                return {
+                                    user_name: usertData.name,
+                                    status: statusData.name,
+                                    comment: followUp.comment,
+                                    date: formatDate(followUp.date),
+                                };
+                            })
+                        );
+                        setData(additionalInfo);
+                        console.log("fetched followup data")
+                        setCheck(true);
+                    }
 
-                            return {
-                                user_name: usertData.name,
-                                status: statusData.name,
-                                comment: followUp.comment,
-                                date: formatDate(followUp.date),
-                            };
-                        })
-                    );
 
-                    setData(additionalInfo);
-                    console.log("fetched followup data")
-                    setCheck(true);
+
+
                 } else {
                     console.error('Error fetching followup:', response.statusText);
                 }
@@ -97,49 +101,49 @@ export const StatusDetails = ({ selectedLeadId }) => {
 
     // if (check == true) {
 
-        return (
-            <Card>
-                <CardContent>
-                    <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-                        {data.map((item, index) => (
-                            <React.Fragment key={index}>
-                                <ListItem alignItems="flex-start">
-                                    <ListItemText
-                                        primary={item.user_name}
-                                        secondary={
-                                            <React.Fragment>
-                                                <Typography
-                                                    sx={{ display: 'inline' }}
-                                                    component="span"
-                                                    variant="body2"
-                                                    color="text.primary"
-                                                >
-                                                    {item.status}
-                                                </Typography>
-                                                {" - "}{item.date}
-                                                <br />
-                                                <Typography
-                                                    sx={{ display: 'inline' }}
-                                                    component="span"
-                                                    variant="body2"
-                                                    color="text.gr"
-                                                >
-                                                    {item.comment}
-                                                </Typography>
-                                            </React.Fragment>
-                                        }
-                                    />
-                                </ListItem>
-                                {index < data.length - 1 && <Divider variant="middle" component="li" />}
-                            </React.Fragment>
-                        ))}
-                    </List>
-                </CardContent>
-            </Card>
+    return (
+        <Card>
+            <CardContent>
+                <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+                    {data.map((item, index) => (
+                        <React.Fragment key={index}>
+                            <ListItem alignItems="flex-start">
+                                <ListItemText
+                                    primary={item.user_name}
+                                    secondary={
+                                        <React.Fragment>
+                                            <Typography
+                                                sx={{ display: 'inline' }}
+                                                component="span"
+                                                variant="body2"
+                                                color="text.primary"
+                                            >
+                                                {item.status}
+                                            </Typography>
+                                            {" - "}{item.date}
+                                            <br />
+                                            <Typography
+                                                sx={{ display: 'inline' }}
+                                                component="span"
+                                                variant="body2"
+                                                color="text.gr"
+                                            >
+                                                {item.comment}
+                                            </Typography>
+                                        </React.Fragment>
+                                    }
+                                />
+                            </ListItem>
+                            {index < data.length - 1 && <Divider variant="middle" component="li" />}
+                        </React.Fragment>
+                    ))}
+                </List>
+            </CardContent>
+        </Card>
 
-        )
+    )
     // } else {
-        // return null;
+    // return null;
     // }
 
 };

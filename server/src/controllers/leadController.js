@@ -36,7 +36,7 @@ async function getLead(req, res) {
 
 //add new lead
 async function addLead(req, res) {
-  const { date, sheduled_to, course_name, branch_name, student_id } = req.body;
+  const { date, sheduled_to, course_name, branch_name, student_id, user_id } = req.body;
 
   //check if course_name exist in course table
   const course_doucument = await Course.findOne({ name: course_name });
@@ -58,14 +58,20 @@ async function addLead(req, res) {
     res.status(400).json({ error: "no such student" });
   }
 
+  //check if user exist in user table
+  if (!mongoose.Types.ObjectId.isValid(user_id)) {
+    res.status(400).json({ error: "no such user" });
+  }
+
   try {
     const newLead = await Lead.create({
-      date,
+      date: date,
       sheduled_at: currentDateTime,
-      sheduled_to,
+      scheduled_to: sheduled_to,
       course_id: course_doucument._id,
       branch_id: branch_doucument._id,
       student_id: student_id,
+      user_id: user_id
     });
     res.status(200).json(newLead);
   } catch (error) {

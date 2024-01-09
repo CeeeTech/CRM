@@ -16,7 +16,7 @@ async function getFollowUps(req, res) {
 
 //add new followup
 async function addFollowUp(req, res) {
-    const { lead_id, user, status, comment,date } = req.body
+    const { lead_id, user_id, status, comment } = req.body
 
     //check if lead exist ini lead table
     if (!mongoose.Types.ObjectId.isValid(lead_id)) {
@@ -29,14 +29,16 @@ async function addFollowUp(req, res) {
         res.status(400).json({ error: `Status not found: ${status}` })
     }
 
-    //check if user exists in user tablers
-    const user_document = await User.findOne({ name: user })
-    if (!user_document) {
-        res.status(400).json({ error: `User not found: ${user}` })
+    //check if user exist in user table
+    if (!mongoose.Types.ObjectId.isValid(user_id)) {
+        res.status(400).json({ error: "no such user" });
     }
 
+    //current datetime
+    const currentDateTime = new Date();
+
     try {
-        const newFollowUp = await FollowUp.create({ lead_id, user_id: user_document._id, status_id: status_document._id, comment, date:date });
+        const newFollowUp = await FollowUp.create({ lead_id: lead_id, user_id: user_id, status_id: status_document._id, comment, date: currentDateTime });
         res.status(200).json(newFollowUp)
     } catch (error) {
         console.log("Error adding followup", error)
