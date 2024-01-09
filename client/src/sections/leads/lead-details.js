@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 import {
   Box,
   Button,
@@ -60,6 +61,7 @@ export const LeadDetails = ({ selectedLeadId }) => {
   const { user } = useAuth();
   const [changedFields, setChangedFields] = useState({});
   const [studentId, setStudentId] = useState('');
+  const router = useRouter();
 
   useEffect(() => {
 
@@ -419,6 +421,8 @@ export const LeadDetails = ({ selectedLeadId }) => {
           updateDate: formattedDate,
           followupId: ''
         })
+        // navigate to the leads page
+        router.push('/leads');
       } catch (error) {
         console.error('Error during data insertion:', error.message);
       }
