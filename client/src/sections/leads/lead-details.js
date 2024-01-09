@@ -339,7 +339,7 @@ export const LeadDetails = ({ selectedLeadId }) => {
             console.log("first");
 
             const updateLeadData = {
-              scheduled_at: formattedDate
+              // scheduled_at: formattedDate
             };
 
             if (selectedCourseId != "") {
@@ -350,6 +350,7 @@ export const LeadDetails = ({ selectedLeadId }) => {
             }
             if (changedFields.scheduled_to != null) {
               updateLeadData.scheduled_to = changedFields.scheduled_to;
+              updateLeadData.scheduled_at = changedFields.scheduled_at;
             }
             console.log(changedFields)
             const updateLead = await fetch(`http://localhost:8080/api/leads/${selectedLeadId}`, {
